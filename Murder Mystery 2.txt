@@ -1,0 +1,715 @@
+local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/KarumuScrpts/E/main/PornHub%20Lib%20Loader"))() -- cal the lib
+local a = library:NewWindow("Corn","HUB") -- Change to anything
+local b = a:NewSection("Main")
+local c = a:NewSection("Player")
+local d = a:NewSection("Teleports")
+local e = a:NewSection("Visual")
+local f = a:NewSection("Emote's")
+
+
+local client = game.Players.LocalPlayer
+local char = client.Character
+
+local noclip = false
+local infjumpenabled = false
+
+
+--main
+b:Button("Reveal Roles", function()
+   for _, player in pairs(game.Players:GetChildren()) do
+       local gun = player.Backpack:FindFirstChild("Gun") or player.Character:FindFirstChild("Gun")
+       local knife = player.Backpack:FindFirstChild("Knife") or player.Character:FindFirstChild("Knife")
+       if gun then
+           game:GetService("StarterGui"):SetCore("SendNotification", {Title = "The Sheriff is", Text = player.Name, Duration = 10, Button1 = "Dismiss"})
+           --gun:Clone().Parent = plr.Backpack
+       elseif knife then
+           game:GetService("StarterGui"):SetCore("SendNotification", {Title = "The Murderer is", Text = player.Name, Duration = 10, Button1 = "Dismiss"})
+           --knife:Clone().Parent = plr.Backpack
+       end
+   end
+end)
+
+b:Button("Kill Everyone (Equip Knife)", function()
+
+
+local Players = game:GetService("Players")	
+for i, Victim in pairs(Players:GetPlayers()) do
+if Victim.Name ~= game.Players.LocalPlayer.Name then
+repeat wait()
+game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = Victim.Character.HumanoidRootPart.CFrame * CFrame.new(0, 0, 1)
+ until
+Victim.Character.Humanoid.Health == 0
+end
+end
+
+end)
+
+b:Button("Kill Murder (Sheriff)", function()
+
+
+local function GetMurderer()
+	    local plrs = game:GetService("Players")
+	    for i,v in pairs(plrs:GetPlayers()) do
+	        if v.Character:FindFirstChild("Knife") or v.Backpack:FindFirstChild("Knife") then
+	            return v
+	        end
+	    end
+	end
+	script.Parent.MouseButton1Click:Connect(function()
+	local Murderer = GetMurderer() --// Gets the userdata of the murderer
+		local pos = Murderer.Character.HumanoidRootPart.Position
+	repeat
+	    if Murderer ~= nil then --// Checking if there actually is a murderer
+				game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = Murderer.Character.HumanoidRootPart.CFrame * CFrame.new(0, 0, 5)
+				workspace.CurrentCamera.CFrame = Murderer.Character.HumanoidRootPart.CFrame
+				
+			end
+	    wait()
+		until Murderer.Character.Humanoid.Health == 0
+		end)
+
+end)
+
+
+
+--player
+c:Slider("WalkSpeed",0,250, function(Value)
+	game:GetService("Players").LocalPlayer.Character.Humanoid.WalkSpeed = Value
+end)
+
+c:Slider("Jump Power",0,250, function(Value)
+	game:GetService("Players").LocalPlayer.Character.Humanoid.JumpPower = Value
+end)
+
+c:Slider("Gravity",0,500, function(Value)
+    workspace.Gravity = Value
+end)
+
+game:GetService("RunService").RenderStepped:Connect(function()
+    if noclip == true then
+        game.Players.LocalPlayer.Character.Humanoid:ChangeState(11)
+    end
+end)
+
+c:Toggle("Noclip", function(Value)
+    noclip = Value
+end)
+
+
+game:GetService("UserInputService").JumpRequest:Connect(function()
+	if infjumpenabled then
+		game:GetService("Players").LocalPlayer.Character.Humanoid:ChangeState("Jumping")
+	end
+end)
+
+
+c:Toggle("Infinite Jump", function(value)
+infjumpenabled = value
+end)
+
+
+
+
+
+--TP
+
+d:Button("TP to Gun", function(Value)
+    		local currentX = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.X
+			local currentY = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.Y
+			local currentZ = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.Z	
+			
+			if workspace:FindFirstChild("GunDrop") ~= nil then
+			
+				game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = workspace:FindFirstChild("GunDrop").CFrame	
+			wait(.25)	
+				game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(currentX, currentY, currentZ)
+				
+			else
+				
+	    game.StarterGui:SetCore("SendNotification", {
+	    Title = "CornHub";
+	    Text = "Wait for the Sheriff's death to grab the gun";
+	    Icon = "";
+	    Duration = "2";
+	})
+				
+	end
+end)
+
+d:Button("TP to lobby",function()
+   game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-109.56, 140, -11.75) + Vector3.new(1, 0, 0)
+end)
+
+d:Button("TP to Map",function()
+   
+			local Workplace = workspace:GetChildren()
+			
+			for i, Thing in pairs(Workplace) do
+			
+			    local ThingChildren = Thing:GetChildren()
+			    for i, Child in pairs(ThingChildren) do
+			        if Child.Name == "Spawns" then
+			           
+			           game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = Child.Spawn.CFrame
+			
+			        end
+			    end
+			end
+
+end)
+
+d:Button("Tp to Murder", function()
+    for i,v in pairs(game:GetService("Players"):GetPlayers()) do
+		if v.Character:FindFirstChild("Knife") or v.Backpack:FindFirstChild("Knife") then
+			game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = v.Character.HumanoidRootPart.CFrame * CFrame.new(0, 3, 0)
+		end
+	end
+end)
+
+d:Button("Tp to Sheriff", function()
+	for i,v in pairs(game:GetService("Players"):GetPlayers()) do
+		if v.Character:FindFirstChild("Revolver") or v.Backpack:FindFirstChild("Revolver") or v.Character:FindFirstChild("Gun") or v.Backpack:FindFirstChild("Gun") then
+			game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = v.Character.HumanoidRootPart.CFrame * CFrame.new(0, 3, 0)
+		end
+	end
+end)
+--Visual
+
+e:Button("Set Night",function()
+   local lighting = game.Lighting
+    lighting.TimeOfDay = 22;
+end)
+
+e:Button("Set Day",function()
+local lighting = game.Lighting
+    lighting.TimeOfDay = 12;
+end)
+
+e:Button("Fake Knife",function()
+   Trolling:Button("Fake Knife", function()
+local lp = game.Players.LocalPlayer
+local tool;local handle;local knife;
+local animation1 = Instance.new("Animation")
+animation1.AnimationId = "rbxassetid://2467567750"
+local animation2 = Instance.new("Animation")
+animation2.AnimationId = "rbxassetid://1957890538"
+local anims = {animation1,animation2}
+tool = Instance.new("Tool")
+tool.Name = "Fake Knife"
+tool.Grip = CFrame.new(0, -1.16999984, 0.0699999481, 1, 0, 0, 0, 1, 0, 0, 0, 1)
+tool.GripForward = Vector3.new(-0, -0, -1)
+tool.GripPos = Vector3.new(0,-1.17,0.0699999)
+tool.GripRight = Vector3.new(1,0,0)
+tool.GripUp = Vector3.new(0,1,0)
+handle = Instance.new("Part")
+handle.Size = Vector3.new(0.310638815, 3.42103457, 1.08775854)
+handle.Name = "Handle"
+handle.Transparency = 1
+handle.Parent = tool
+tool.Parent = lp.Backpack
+knife=lp.Character:WaitForChild("KnifeDisplay")
+knife.Massless = true
+lp:GetMouse().Button1Down:Connect(function()
+if tool and  tool.Parent == lp.Character then
+local an = lp.Character.Humanoid:LoadAnimation(anims[math.random(1,2)])
+an:Play()
+end
+end)
+local aa = Instance.new("Attachment",handle)
+local ba = Instance.new("Attachment",knife)
+local hinge = Instance.new("HingeConstraint",knife)
+hinge.Attachment0=aa hinge.Attachment1=ba
+hinge.LimitsEnabled = true
+hinge.LowerAngle = 0
+hinge.Restitution = 0
+hinge.UpperAngle = 0
+lp.Character:WaitForChild"UpperTorso":FindFirstChild("Weld"):Destroy()
+game:GetService"RunService".Heartbeat:Connect(function()
+setsimulationradius(1/0,1/0)
+if tool.Parent == lp.Character then
+knife.CFrame = handle.CFrame
+else
+knife.CFrame = lp.Character:WaitForChild"UpperTorso".CFrame
+end
+end)
+end)
+end)
+
+e:Button("FPS Booster", function(value)
+local removedecals = false
+local g = game
+local w = g.Workspace
+local l = g.Lighting
+local t = w.Terrain
+t.WaterWaveSize = 0
+t.WaterWaveSpeed = 0
+t.WaterReflectance = 0
+t.WaterTransparency = 0
+l.GlobalShadows = false
+l.FogEnd = 9e9
+l.Brightness = 0
+settings().Rendering.QualityLevel = "Level01"
+for i, v in pairs(g:GetDescendants()) do
+    if v:IsA("Part") or v:IsA("Union") or v:IsA("CornerWedgePart") or v:IsA("TrussPart") then
+        v.Material = "Plastic"
+        v.Reflectance = 0
+    elseif v:IsA("Decal") or v:IsA("Texture") and removedecals then
+        v.Transparency = 1
+    elseif v:IsA("ParticleEmitter") or v:IsA("Trail") then
+        v.Lifetime = NumberRange.new(0)
+    elseif v:IsA("Explosion") then
+        v.BlastPressure = 1
+        v.BlastRadius = 1
+    elseif v:IsA("Fire") or v:IsA("SpotLight") or v:IsA("Smoke") or v:IsA("Sparkles") then
+        v.Enabled = false
+    elseif v:IsA("MeshPart") then
+        v.Material = "Plastic"
+        v.Reflectance = 0
+        v.TextureID = 10385902758728957
+    end
+end
+for i, e in pairs(l:GetChildren()) do
+    if e:IsA("BlurEffect") or e:IsA("SunRaysEffect") or e:IsA("ColorCorrectionEffect") or e:IsA("BloomEffect") or e:IsA("DepthOfFieldEffect") then
+        e.Enabled = false
+    end
+end
+end)
+
+e:Slider("FOV",0,120, function(Value)
+    
+local amount = fovamount
+
+game:GetService'Workspace'.Camera.FieldOfView = Value
+
+end)
+
+
+
+
+e:Toggle("Xray", function(value)
+    if value then
+        for i,v in pairs(workspace:GetDescendants()) do
+			if v:IsA("BasePart") and not v.Parent.Parent:FindFirstChild("Humanoid") then
+				v.Transparency = v.Transparency + 0.5
+			end
+		end
+    else
+        for i,v in pairs(workspace:GetDescendants()) do
+			if v:IsA("BasePart") and not v.Parent.Parent:FindFirstChild("Humanoid") then
+				v.Transparency = v.Transparency - 0.5
+			end
+		end
+    end
+end)
+
+
+
+e:Toggle("ESP",function(value)
+    
+if Toggle == true then
+    toggle = false
+    
+    print("Off")
+-- << Esp Settings >>
+local ESP_SETTINGS = {
+    ['MurdererColor'] = Color3.fromRGB(255, 0, 0),
+    ['SheriffColor'] = Color3.fromRGB(0, 0, 255),
+    ['GunColor'] = Color3.fromRGB(255, 255, 0)
+}
+
+-- << Check If Running >>
+if _G.EspDestroy then
+    _G.EspDestroy()
+    _G.EspDestroy = nil
+    return
+end
+
+-- << GetServices >>
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+
+-- << Variables >>
+local Camera = workspace.CurrentCamera
+local LocalPlayer = Players.LocalPlayer
+local _RunServiceConnection;
+
+-- << Esp Setup >>
+local murdererLine, sheriffLine, gunLine = Drawing.new("Line"), Drawing.new("Line"), Drawing.new("Line")
+murdererLine.Color = ESP_SETTINGS['MurdererColor'] murdererLine.Thickness = 2 murdererLine.Transparency = 1 murdererLine.Visible = false
+sheriffLine.Color = ESP_SETTINGS['SheriffColor'] sheriffLine.Thickness = 2 sheriffLine.Transparency = 1 sheriffLine.Visible = false
+gunLine.Color = ESP_SETTINGS['GunColor'] gunLine.Thickness = 2 gunLine.Transparency = 1 gunLine.Visible = false
+
+-- << Functions >>
+local function worldToScreenPoint(...)
+    local vector, onScreen = Camera:WorldToScreenPoint(...)
+
+    if onScreen then
+        return {true, Vector2.new(vector.X - 2, vector.Y - 2)}
+    else
+        return {false}
+    end
+end
+
+local function isGunDown()
+    if workspace:FindFirstChild("GunDrop") then
+        return true
+    else
+        return false
+    end
+end
+
+local function getMurderer()
+    for a,b in pairs(Players:GetPlayers()) do
+        if b.Character then
+            if b.Character:FindFirstChild("Knife") or b.Backpack:FindFirstChild("Knife") then
+                return b
+            end
+        end
+    end
+    return nil
+end
+
+local function getSheriff()
+    for a,b in pairs(Players:GetPlayers()) do
+        if b.Character then
+            if b.Character:FindFirstChild("Gun") or b.Backpack:FindFirstChild("Gun") then
+                return b
+            end
+        end
+    end
+    return nil
+end
+
+-- << Create Destroy Function >>
+_G.EspDestroy = function()
+    _RunServiceConnection:Disconnect()
+    murdererLine.Visible = false
+    sheriffLine.Visible = false
+    gunLine.Visible = false
+end
+
+-- << Esp Main >>
+_RunServiceConnection = RunService.RenderStepped:Connect(function()
+    -- << Cache Data For One Call >>
+    local murdererCache = getMurderer()
+    local sheriffCache = getSheriff()
+    local isGunDownCache = isGunDown()
+
+    -- << Murderer Esp >>
+    pcall(function()
+        if murdererCache and murdererCache.Character then
+            if murdererCache.Name ~= LocalPlayer.Name then
+                local onScreenPosition = worldToScreenPoint(murdererCache.Character.HumanoidRootPart.Position)
+                if onScreenPosition[1] == true then
+                    murdererLine.Visible = true
+                    murdererLine.From = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y)
+                    murdererLine.To = onScreenPosition[2]
+                else
+                    murdererLine.Visible = false
+                end
+            end
+        else
+            murdererLine.Visible = false
+        end
+    end)
+
+    -- << Sheriff Esp >>
+    pcall(function()
+        if sheriffCache and sheriffCache.Character then
+            if sheriffCache.Name ~= LocalPlayer.Name then
+                local onScreenPosition = worldToScreenPoint(sheriffCache.Character.HumanoidRootPart.Position)
+                if onScreenPosition[1] == true then
+                    sheriffLine.Visible = true
+                    sheriffLine.From = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y)
+                    sheriffLine.To = onScreenPosition[2]
+                else
+                    sheriffLine.Visible = false
+                end
+            end
+        else
+            sheriffLine.Visible = false
+        end
+    end)
+
+    -- << Gun Esp >>
+    pcall(function()
+        if isGunDownCache then
+            if workspace:FindFirstChild("GunDrop") then
+                local onScreenPosition = worldToScreenPoint(workspace.GunDrop.Position)
+                if onScreenPosition[1] == true then
+                    gunLine.Visible = true
+                    gunLine.From = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y)
+                    gunLine.To = onScreenPosition[2]
+                else
+                    gunLine.Visible = false
+                end
+            else
+                gunLine.Visible = false
+            end
+        else
+            gunLine.Visible = false
+        end
+    end)
+end)
+else
+    toggle = true
+    
+    print("On")
+    -- << Esp Settings >>
+local ESP_SETTINGS = {
+    ['MurdererColor'] = Color3.fromRGB(255, 0, 0),
+    ['SheriffColor'] = Color3.fromRGB(0, 0, 255),
+    ['GunColor'] = Color3.fromRGB(255, 255, 0)
+}
+
+-- << Check If Running >>
+if _G.EspDestroy then
+    _G.EspDestroy()
+    _G.EspDestroy = nil
+    return
+end
+
+-- << GetServices >>
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+
+-- << Variables >>
+local Camera = workspace.CurrentCamera
+local LocalPlayer = Players.LocalPlayer
+local _RunServiceConnection;
+
+-- << Esp Setup >>
+local murdererLine, sheriffLine, gunLine = Drawing.new("Line"), Drawing.new("Line"), Drawing.new("Line")
+murdererLine.Color = ESP_SETTINGS['MurdererColor'] murdererLine.Thickness = 2 murdererLine.Transparency = 1 murdererLine.Visible = true
+sheriffLine.Color = ESP_SETTINGS['SheriffColor'] sheriffLine.Thickness = 2 sheriffLine.Transparency = 1 sheriffLine.Visible = true
+gunLine.Color = ESP_SETTINGS['GunColor'] gunLine.Thickness = 2 gunLine.Transparency = 1 gunLine.Visible = true
+
+-- << Functions >>
+local function worldToScreenPoint(...)
+    local vector, onScreen = Camera:WorldToScreenPoint(...)
+
+    if onScreen then
+        return {true, Vector2.new(vector.X - 2, vector.Y - 2)}
+    else
+        return {false}
+    end
+end
+
+local function isGunDown()
+    if workspace:FindFirstChild("GunDrop") then
+        return true
+    else
+        return false
+    end
+end
+
+local function getMurderer()
+    for a,b in pairs(Players:GetPlayers()) do
+        if b.Character then
+            if b.Character:FindFirstChild("Knife") or b.Backpack:FindFirstChild("Knife") then
+                return b
+            end
+        end
+    end
+    return nil
+end
+
+local function getSheriff()
+    for a,b in pairs(Players:GetPlayers()) do
+        if b.Character then
+            if b.Character:FindFirstChild("Gun") or b.Backpack:FindFirstChild("Gun") then
+                return b
+            end
+        end
+    end
+    return nil
+end
+
+-- << Create Destroy Function >>
+_G.EspDestroy = function()
+    _RunServiceConnection:Disconnect()
+    murdererLine.Visible = false
+    sheriffLine.Visible = false
+    gunLine.Visible = false
+end
+
+-- << Esp Main >>
+_RunServiceConnection = RunService.RenderStepped:Connect(function()
+    -- << Cache Data For One Call >>
+    local murdererCache = getMurderer()
+    local sheriffCache = getSheriff()
+    local isGunDownCache = isGunDown()
+
+    -- << Murderer Esp >>
+    pcall(function()
+        if murdererCache and murdererCache.Character then
+            if murdererCache.Name ~= LocalPlayer.Name then
+                local onScreenPosition = worldToScreenPoint(murdererCache.Character.HumanoidRootPart.Position)
+                if onScreenPosition[1] == true then
+                    murdererLine.Visible = true
+                    murdererLine.From = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y)
+                    murdererLine.To = onScreenPosition[2]
+                else
+                    murdererLine.Visible = false
+                end
+            end
+        else
+            murdererLine.Visible = false
+        end
+    end)
+
+    -- << Sheriff Esp >>
+    pcall(function()
+        if sheriffCache and sheriffCache.Character then
+            if sheriffCache.Name ~= LocalPlayer.Name then
+                local onScreenPosition = worldToScreenPoint(sheriffCache.Character.HumanoidRootPart.Position)
+                if onScreenPosition[1] == true then
+                    sheriffLine.Visible = true
+                    sheriffLine.From = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y)
+                    sheriffLine.To = onScreenPosition[2]
+                else
+                    sheriffLine.Visible = false
+                end
+            end
+        else
+            sheriffLine.Visible = false
+        end
+    end)
+
+    -- << Gun Esp >>
+    pcall(function()
+        if isGunDownCache then
+            if workspace:FindFirstChild("GunDrop") then
+                local onScreenPosition = worldToScreenPoint(workspace.GunDrop.Position)
+                if onScreenPosition[1] == true then
+                    gunLine.Visible = true
+                    gunLine.From = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y)
+                    gunLine.To = onScreenPosition[2]
+                else
+                    gunLine.Visible = false
+                end
+            else
+                gunLine.Visible = false
+            end
+        else
+            gunLine.Visible = false
+        end
+    end)
+end)
+
+end
+end)
+
+
+
+
+--Emote's
+
+f:Button("Sit", function()
+    local string_1 = "sit";
+    local Target = game:GetService("ReplicatedStorage").PlayEmote;
+    Target:Fire(string_1);
+end)
+
+f:Button("Zombie", function()
+    local string_1 = "zombie";
+    local Target = game:GetService("ReplicatedStorage").PlayEmote;
+    Target:Fire(string_1);
+end)
+
+f:Button("Spray", function()
+    local string_1 = "SprayPaint";
+    local Target = game:GetService("ReplicatedStorage").PlayEmote;
+    Target:Fire(string_1);
+end)
+
+f:Button("Dab", function()
+    local string_1 = "dab";
+    local Target = game:GetService("ReplicatedStorage").PlayEmote;
+    Target:Fire(string_1);
+end)
+
+f:Button("Ninja", function()
+    local string_1 = "ninja";
+    local Target = game:GetService("ReplicatedStorage").PlayEmote;
+    Target:Fire(string_1);
+end)
+
+f:Button("Floss", function()
+    local string_1 = "floss";
+    local Target = game:GetService("ReplicatedStorage").PlayEmote;
+    Target:Fire(string_1);
+end)
+
+f:Button("Zen", function()
+    local string_1 = "zen";
+    local Target = game:GetService("ReplicatedStorage").PlayEmote;
+    Target:Fire(string_1);
+end)
+
+
+
+
+
+--[[
+
+
+
+
+
+local txt  = b:Text("Text")
+local txt2 = b:Text("Even Cooler",'http://www.roblox.com/asset/?id=6022668902')
+b:h1("Heading")
+local log = true  
+b:Button("Change Text",function()
+   txt:Refresh("Changed")
+end)
+b:Button("You can also change the icon too",function()
+   log = not log
+   if log then
+   txt2:Refresh("true","http://www.roblox.com/asset/?id=6023426945")
+   else
+   txt2:Refresh("false ","http://www.roblox.com/asset/?id=6023426939")
+
+   end
+end)
+b:Toggle("Toggle",function(a)
+   print("Toggle",a)
+end)
+b:Button("Button",function()
+   print("HI")
+end)
+b:Box("Textbox",function(a)
+   print("Textbox :",a)
+end)
+b:Bind("Toggle GUI",Enum.KeyCode.P,true,function(a)
+   library:SetBind(a)
+   print("Set".. a ..  " as a gui keybind")
+end)
+b:Bind("Default Bind",Enum.KeyCode.A,false,function(a)
+   print(a)
+end)
+b:Slider("Slider",1,50,function(a)
+   print("Slider",a)
+end)
+
+d:Drop("Weapons",{"Sword","Melee","gun"},function(a)
+   print(a)
+end)
+
+local d_t = {
+   "Auto Farm",
+   "Auto Stats",
+   "Auto Quest",
+   "Auto Kick",
+   "Anti Mod",
+}
+d:Slider("Distance ",-5,20)
+d:Button("Hide Name")
+d:Box("Fake Name")
+d:Text("Target : N/A")
+for i,v in next,d_t do d:Toggle(v) end
+d:h1("END")
+
+--]]
+

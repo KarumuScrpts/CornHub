@@ -1,0 +1,305 @@
+local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/KarumuScrpts/E/main/PornHub%20Lib%20Loader"))() -- cal the lib
+local a = library:NewWindow("Corn","HUB") -- Change to anything
+local b = a:NewSection("Main")
+local c = a:NewSection("Player")
+local e = a:NewSection("Visual")
+local d = a:NewSection("Settings")
+
+
+
+-- Variables
+
+local s =
+    setmetatable(
+    {},
+    {
+        __index = function(self, service)
+            return game:GetService(service)
+        end,
+        __newindex = function(self, key)
+            self[key] = nil
+        end
+    }
+)
+
+local Ser;
+
+for i, v in next, getreg() do
+    if typeof(v) == "table" then
+        if rawget(v, "Services") then
+            Ser = v.Services
+            break
+        end
+    end
+end
+
+local key = getupvalue(Ser.Combat.Init, 2)
+
+local user = s["Players"].LocalPlayer
+local ReplicatedStorage = s["ReplicatedStorage"]
+
+getgenv().TweenSpeed = 50
+getgenv().Studs = 5000
+
+local client = game.Players.LocalPlayer
+local char = client.Character
+
+local noclip = false
+local infjumpenabled = false
+
+-- etc
+
+local BossNames = {
+    "Dire Wolf",
+    "Rahjin the Thief King",
+    "Borik the BeeKeeper",
+    "Gorrock the Grove Protector",
+    "Ra'thae the Ice King",
+    "Qerach The Forgotten Golem",
+    "Irath the Lion",
+    "Rotling",
+    "Fire Scorpion",
+    "Sa'jun the Centurian Chieftain",
+    "Frogazoid",
+    "Smashroom",
+    "Hippogriff",
+    "Formaug the Jungle Giant",
+    "Gargoyle Reaper",
+    "Mortis the Flaming Sear",
+    "Polyserpant",
+    "Baal",
+    "Grim the Overseer",
+    "Da",
+    "Ra",
+    "Ka",
+    "Egg Mimic" -- easter event
+}
+
+-- Functions
+
+local function Damage(Enemy)
+    --if (not getgenv().MultiplyDamage) then
+        --ReplicatedStorage.Event:FireServer("Combat", key, {"Attack", nil, "1", Enemy})
+        --return
+    --end
+    -- above coming soon
+    
+    ReplicatedStorage.Event:FireServer("Skills", {"UseSkill", "Summon Pistol"})
+    ReplicatedStorage.Event:FireServer("Combat", key, {"Attack", "Summon Pistol", "1", Enemy})
+end
+
+local function UserWalkSpeed(person, speed)
+    if person and person.Character then
+        if person.Character:FindFirstChildWhichIsA("Humanoid") then
+            person.Character:FindFirstChildWhichIsA("Humanoid").WalkSpeed = speed
+        end
+    end
+end
+
+local function GoInvisible()
+    if(user.Character and user.Character:FindFirstChild("LowerTorso") or user.Character:FindFirstChildWhichIsA("LowerTorso")) then
+        user.character.LowerTorso.Root:Destroy()
+    end
+end
+
+local function Nearest()
+    local d = getgenv().Studs
+    local t = nil
+
+    for i, v in pairs(game.Workspace.Mobs:GetChildren()) do
+        if
+            (v.PrimaryPart ~= nil and v:FindFirstChild("HumanoidRootPart") and v:FindFirstChild("Nameplate") and
+                v.Parent and
+                v:FindFirstChild("Entity") and
+                v.Entity.Health.Value > 0)
+         then
+            if getgenv().TargetBosses then
+                for _, i in next, BossNames do
+                    if (i == v.Name) then
+                        return v
+                    end
+                end
+            end
+            local Magnitude = (v.PrimaryPart.CFrame.p - Workspace.CurrentCamera.CFrame.p).Magnitude
+            if (Magnitude < d and Magnitude > 0) then
+                d = Magnitude
+                t = v
+            end
+        end
+    end
+    
+    return t
+end
+
+game:GetService("RunService").RenderStepped:Connect(function()
+    if noclip == true then
+        game.Players.LocalPlayer.Character.Humanoid:ChangeState(11)
+    end
+end)
+
+game:GetService("UserInputService").JumpRequest:Connect(function()
+	if infjumpenabled then
+		game:GetService("Players").LocalPlayer.Character.Humanoid:ChangeState("Jumping")
+	end
+end)
+
+
+--Main
+
+b:Toggle("Auto-farm",function(Value)
+getgenv().autofarm = Value
+            while getgenv().autofarm do        
+                local Enemy = Nearest()
+
+                if (Enemy ~= nil) then
+                    tweenService, tweenInfo = s["TweenService"], TweenInfo.new((user.Character.HumanoidRootPart.Position - Enemy.HumanoidRootPart.Position).Magnitude / getgenv().TweenSpeed, Enum.EasingStyle.Linear)
+                    T = tweenService:Create(user.Character.HumanoidRootPart, tweenInfo, {CFrame = Enemy.PrimaryPart.CFrame * CFrame.new(0, 15, 0)})
+                    T:Play()
+                end
+                wait()
+            end
+end)
+
+b:Toggle("Kill Aura",function(Value)
+getgenv().killaura = Value
+            while getgenv().killaura and wait() do
+                local Enemy = Nearest()
+
+                if (Enemy ~= nil) then
+                    wait(.3)
+                    Damage(Enemy.Entity.Parent)
+                end
+            end
+end)
+
+b:Toggle("Prioritize Bosses",function(Value)
+getgenv().TargetBosses = Value
+end)
+
+
+--[[
+local txt  = b:Text("Text")
+
+b:h1("Heading")
+
+b:Bind("Toggle GUI",Enum.KeyCode.P,true,function(a)
+   library:SetBind(a)
+   print("Set".. a ..  " as a gui keybind")
+end)
+
+--]]
+
+
+--Player
+
+c:Button("Invisible",function()
+     GoInvisible()
+end)
+
+--player
+c:Slider("WalkSpeed",0,250, function(Value)
+	game:GetService("Players").LocalPlayer.Character.Humanoid.WalkSpeed = Value
+end)
+
+c:Slider("Jump Power",0,250, function(Value)
+	game:GetService("Players").LocalPlayer.Character.Humanoid.JumpPower = Value
+end)
+
+c:Slider("Gravity",0,500, function(Value)
+    workspace.Gravity = Value
+end)
+
+c:Toggle("Noclip", function(Value)
+    noclip = Value
+end)
+
+c:Toggle("Infinite Jump", function(value)
+infjumpenabled = value
+end)
+
+
+--Visual
+
+e:Button("FPS Booster", function(value)
+local removedecals = false
+local g = game
+local w = g.Workspace
+local l = g.Lighting
+local t = w.Terrain
+t.WaterWaveSize = 0
+t.WaterWaveSpeed = 0
+t.WaterReflectance = 0
+t.WaterTransparency = 0
+l.GlobalShadows = false
+l.FogEnd = 9e9
+l.Brightness = 0
+settings().Rendering.QualityLevel = "Level01"
+for i, v in pairs(g:GetDescendants()) do
+    if v:IsA("Part") or v:IsA("Union") or v:IsA("CornerWedgePart") or v:IsA("TrussPart") then
+        v.Material = "Plastic"
+        v.Reflectance = 0
+    elseif v:IsA("Decal") or v:IsA("Texture") and removedecals then
+        v.Transparency = 1
+    elseif v:IsA("ParticleEmitter") or v:IsA("Trail") then
+        v.Lifetime = NumberRange.new(0)
+    elseif v:IsA("Explosion") then
+        v.BlastPressure = 1
+        v.BlastRadius = 1
+    elseif v:IsA("Fire") or v:IsA("SpotLight") or v:IsA("Smoke") or v:IsA("Sparkles") then
+        v.Enabled = false
+    elseif v:IsA("MeshPart") then
+        v.Material = "Plastic"
+        v.Reflectance = 0
+        v.TextureID = 10385902758728957
+    end
+end
+for i, e in pairs(l:GetChildren()) do
+    if e:IsA("BlurEffect") or e:IsA("SunRaysEffect") or e:IsA("ColorCorrectionEffect") or e:IsA("BloomEffect") or e:IsA("DepthOfFieldEffect") then
+        e.Enabled = false
+    end
+end
+end)
+
+e:Slider("FOV",0,120, function(Value)
+    
+local amount = fovamount
+
+game:GetService'Workspace'.Camera.FieldOfView = Value
+
+end)
+
+
+
+
+e:Toggle("Xray", function(value)
+    if value then
+        for i,v in pairs(workspace:GetDescendants()) do
+			if v:IsA("BasePart") and not v.Parent.Parent:FindFirstChild("Humanoid") then
+				v.Transparency = v.Transparency + 0.5
+			end
+		end
+    else
+        for i,v in pairs(workspace:GetDescendants()) do
+			if v:IsA("BasePart") and not v.Parent.Parent:FindFirstChild("Humanoid") then
+				v.Transparency = v.Transparency - 0.5
+			end
+		end
+    end
+end)
+
+--Settings
+
+
+d:Bind("Toggle GUI",Enum.KeyCode.P,true,function(a)
+   library:SetBind(a)
+   print("Set".. a ..  " as a gui keybind")
+end)
+
+d:Slider("Max Entity Distance",0,10000, function(Value)
+	getgenv().Studs = Value
+end)
+
+d:Slider("Tweening Speed",0,125, function(Value)
+	getgenv().TweenSpeed = Value
+end)
+
