@@ -1,0 +1,235 @@
+local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/KarumuScrpts/E/main/PornHub%20Lib%20Loader"))() -- cal the lib
+local a = library:NewWindow("Corn","HUB") -- Change to anything
+local b = a:NewSection("Main")
+local c = a:NewSection("Gun")
+local d = a:NewSection("Aim")
+local e = a:NewSection("Extra")
+
+
+b:Toggle("One Shot", function(Value)
+getgenv().OneShot = Value -- true/false
+
+local mt = getrawmetatable(game)
+setreadonly(mt, false)
+local nc = mt.__namecall
+
+mt.__namecall = newcclosure(function(self, ...)
+    local Method = getnamecallmethod()
+    local Args = {...}
+
+    if Method == 'FireServer' and self.Name == 'HitPart' and OneShot then
+        for i = 1, 3 do
+            nc(self, unpack(Args))
+        end
+    end
+
+    return nc(self, ...)
+end)
+end)
+
+b:Toggle("Kill all", function(Value)
+getgenv().TeamCheck = true -- true/false
+getgenv().KillAll = Value -- true/false
+
+local mt = getrawmetatable(game)
+setreadonly(mt, false)
+local nc = mt.__namecall
+
+mt.__namecall = newcclosure(function(self, ...)
+    local Method = getnamecallmethod()
+    local Args = {...}
+ 
+    if Method == 'FireServer' and self.Name == 'HitPart' and KillAll then
+       
+        for i,v in next, game.Players.GetPlayers(game.Players) do
+            if v ~= game.Players.LocalPlayer and ((TeamCheck and v.Team ~= game.Players.LocalPlayer.Team) or (not TeamCheck and true)) then
+                if v.Character.FindFirstChild(v.Character, 'Head') and v.Character.FindFirstChild(v.Character, 'Humanoid') and v.Character.Humanoid.Health ~= 0 then
+                    local Player = v
+
+                    Args[1] = Player.Character.Head
+                    Args[2] = Player.Character.Head.Position
+                   
+                    for i = 1, 3 do
+                        nc(self, unpack(Args))
+                    end
+                end
+            end
+        end
+    end
+ 
+    return nc(self, ...)
+end)
+end)
+
+d:Toggle("TDM Silent Aim", function(Value)
+getgenv().TeamCheck = true -- true/false
+getgenv().SilentAim = Value -- true/false
+
+local function GetClosestPlayer()
+    local Player = nil
+    local Distance = math.huge;
+  
+    for i,v in next, game.Players.GetPlayers(game.Players) do
+        if v ~= game.Players.LocalPlayer and ((TeamCheck and v.Team ~= game.Players.LocalPlayer.Team) or (not TeamCheck and true)) then
+            if v.Character.FindFirstChild(v.Character, 'Head') and v.Character.FindFirstChild(v.Character, 'Humanoid') and v.Character.Humanoid.Health ~= 0 then
+                local Pos = game.Workspace.CurrentCamera.WorldToViewportPoint(game.Workspace.CurrentCamera, v.Character.Head.Position)
+                local Mouse = game.Players.LocalPlayer.GetMouse(game.Players.LocalPlayer)
+                local Magnitude = (Vector2.new(Mouse.X, Mouse.Y)-Vector2.new(Pos.X, Pos.Y)).magnitude
+              
+                if Magnitude < Distance then
+                    Player = v
+                    Distance = Magnitude
+                end
+            end
+        end
+    end
+  
+    return Player or 'gay'
+end
+
+local mt = getrawmetatable(game)
+setreadonly(mt, false)
+local nc = mt.__namecall
+
+mt.__namecall = newcclosure(function(self, ...)
+    local Method = getnamecallmethod()
+    local Args = {...}
+  
+    if Method == 'FireServer' and self.Name == 'HitPart' and SilentAim then
+        local Player = GetClosestPlayer()
+      
+        if Player ~= 'gay' then
+            Args[1] = Player.Character.Head
+            Args[2] = Player.Character.Head.Position
+            return nc(self, unpack(Args))
+        end
+    end
+  
+    return nc(self, ...)
+end)
+end)
+
+d:Toggle("FFA Silent Aim", function(Value)
+getgenv().TeamCheck = Value -- true/false
+getgenv().SilentAim = Value -- true/false
+
+local function GetClosestPlayer()
+    local Player = nil
+    local Distance = math.huge;
+  
+    for i,v in next, game.Players.GetPlayers(game.Players) do
+        if v ~= game.Players.LocalPlayer and ((TeamCheck and v.Team ~= game.Players.LocalPlayer.Team) or (not TeamCheck and true)) then
+            if v.Character.FindFirstChild(v.Character, 'Head') and v.Character.FindFirstChild(v.Character, 'Humanoid') and v.Character.Humanoid.Health ~= 0 then
+                local Pos = game.Workspace.CurrentCamera.WorldToViewportPoint(game.Workspace.CurrentCamera, v.Character.Head.Position)
+                local Mouse = game.Players.LocalPlayer.GetMouse(game.Players.LocalPlayer)
+                local Magnitude = (Vector2.new(Mouse.X, Mouse.Y)-Vector2.new(Pos.X, Pos.Y)).magnitude
+              
+                if Magnitude < Distance then
+                    Player = v
+                    Distance = Magnitude
+                end
+            end
+        end
+    end
+  
+    return Player or 'gay'
+end
+
+local mt = getrawmetatable(game)
+setreadonly(mt, false)
+local nc = mt.__namecall
+
+mt.__namecall = newcclosure(function(self, ...)
+    local Method = getnamecallmethod()
+    local Args = {...}
+  
+    if Method == 'FireServer' and self.Name == 'HitPart' and SilentAim then
+        local Player = GetClosestPlayer()
+      
+        if Player ~= 'gay' then
+            Args[1] = Player.Character.Head
+            Args[2] = Player.Character.Head.Position
+            return nc(self, unpack(Args))
+        end
+    end
+  
+    return nc(self, ...)
+end)
+end)
+
+
+
+
+
+c:Button("Ammo",function()
+    for i,v in next, game:GetService("ReplicatedStorage").Weapons:GetChildren() do
+    if v and v:FindFirstChild('Ammo') and v:FindFirstChild('Bullets') and v:FindFirstChild('EquipTime') and v:FindFirstChild('FireRate') and v:FindFirstChild('StoredAmmo') and v:FindFirstChild('Spread') and v:FindFirstChild('Recoil') then
+        v:FindFirstChild('Ammo').Value = 2500
+        v:FindFirstChild('StoredAmmo').Value = 2500
+        end
+end
+end)
+
+c:Button("Equip Time",function()
+    for i,v in next, game:GetService("ReplicatedStorage").Weapons:GetChildren() do
+    if v and v:FindFirstChild('Ammo') and v:FindFirstChild('Bullets') and v:FindFirstChild('EquipTime') and v:FindFirstChild('FireRate') and v:FindFirstChild('StoredAmmo') and v:FindFirstChild('Spread') and v:FindFirstChild('Recoil') then
+        v:FindFirstChild('EquipTime').Value = 0.01
+    end
+end
+end)
+
+c:Button("Spread",function()
+    for i,v in next, game:GetService("ReplicatedStorage").Weapons:GetChildren() do
+    if v and v:FindFirstChild('Ammo') and v:FindFirstChild('Bullets') and v:FindFirstChild('EquipTime') and v:FindFirstChild('FireRate') and v:FindFirstChild('StoredAmmo') and v:FindFirstChild('Spread') and v:FindFirstChild('Recoil') then
+        v:FindFirstChild('Spread').Value = 0.01
+
+    end
+end
+end)
+
+c:Button("Recoil",function()
+    for i,v in next, game:GetService("ReplicatedStorage").Weapons:GetChildren() do
+    if v and v:FindFirstChild('Ammo') and v:FindFirstChild('Bullets') and v:FindFirstChild('EquipTime') and v:FindFirstChild('FireRate') and v:FindFirstChild('StoredAmmo') and v:FindFirstChild('Spread') and v:FindFirstChild('Recoil') then
+        v:FindFirstChild('Recoil').Value = 0.01
+    end
+end
+end)
+
+c:Button("All Gun Mods",function()
+    for i,v in next, game:GetService("ReplicatedStorage").Weapons:GetChildren() do
+    if v and v:FindFirstChild('Ammo') and v:FindFirstChild('Bullets') and v:FindFirstChild('EquipTime') and v:FindFirstChild('FireRate') and v:FindFirstChild('StoredAmmo') and v:FindFirstChild('Spread') and v:FindFirstChild('Recoil') then
+        v:FindFirstChild('Ammo').Value = 2500
+        v:FindFirstChild('EquipTime').Value = 0.01
+        v:FindFirstChild('StoredAmmo').Value = 2500
+        v:FindFirstChild('Spread').Value = 0.01
+        v:FindFirstChild('Recoil').Value = 0.01
+    end
+end
+end)
+
+
+e:Button("Server Crasher",function()
+game.RunService.Heartbeat:Connect(function()
+   game.ReplicatedStorage.Events.ThrowGrenade:FireServer(game.ReplicatedStorage.Weapons["Incendiary Grenade"].Model, nil, 25, 35, Vector3.new(0, 0, 0), "", "")
+end)
+end)
+
+e:Button("Anti Vote Kick",function()
+local min_count = 2
+repeat wait() until game:IsLoaded()
+if game.PlaceId == 1480424328 or game.PlaceId == 301549746 then
+local chat
+repeat pcall(function() chat = game:GetService("Players").LocalPlayer.PlayerGui.GUI.Main.Chats end) wait() until chat
+print(chat)
+local c = coroutine.create(function()
+while wait() do
+   for i,child in pairs(chat:GetDescendants()) do
+   if child:IsA"TextLabel" then
+       repeat game:GetService"RunService".Stepped:Wait() until child.Text ~= "Label"
+       local t= child.Text:split(" ")
+if t[6] and t[7] and string.find(t[6],game.Players.LocalPlayer.Name) and (tonumber(t[7])) <= min_count then
+   game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId, game.JobId)
+   end end end end end)
+
+end
+end)
