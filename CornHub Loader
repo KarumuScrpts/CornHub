@@ -8,12 +8,16 @@ if game.PlaceId==142823291 then --Murder Mystery 2
 lo("https://raw.githubusercontent.com/KarumuScrpts/CornHub/main/Murder%20Mystery%202.txt")
 end
 
-if game.PlaceId==659222129 or 542351431 then --SwordBurst 2 (Need to add more levels, only level 1 RN)
+if game.PlaceId==542351431 then --SwordBurst 2 (Need to add more levels, only level 1 RN)
 lo("https://raw.githubusercontent.com/KarumuScrpts/CornHub/main/SwordBurst%202.txt")
 end
 
 if game.PlaceId==301549746 then --Counter Blox
 lo("https://raw.githubusercontent.com/KarumuScrpts/CornHub/main/Counter%20Blox")
+end
+
+if game.PlaceId==292439477 then --Phantom Forces (Auto Farm)
+lo("https://raw.githubusercontent.com/KarumuScrpts/CornHub/main/PhantomForcesAutoFarm")
 end
 
 if nouni==false then --Universal
