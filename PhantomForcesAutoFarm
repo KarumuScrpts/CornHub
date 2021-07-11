@@ -1,7 +1,7 @@
 local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/KarumuScrpts/E/main/PornHub%20Lib%20Loader"))() -- cal the lib
 local a = library:NewWindow("Corn","HUB") -- Change to anything
 local b = a:NewSection("Main")
-local c = a:NewSection("Gun")
+
 
 b:Toggle("Auto Farm",function(Value)
 
