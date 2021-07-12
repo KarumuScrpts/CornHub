@@ -1,0 +1,721 @@
+local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/KarumuScrpts/E/main/PornHub%20Lib%20Loader"))() -- cal the lib
+local a = library:NewWindow("Corn","HUB") -- Change to anything
+local b = a:NewSection("Main")
+local c = a:NewSection("Player")
+local e = a:NewSection("Visual")
+local d = a:NewSection("Aim")
+local f = a:NewSection("Gun")
+local g = a:NewSection("Extra")
+
+local client = game.Players.LocalPlayer
+local char = client.Character
+
+local noclip = false
+local infjumpenabled = false
+
+game:GetService("RunService").RenderStepped:Connect(function()
+    if noclip == true then
+        game.Players.LocalPlayer.Character.Humanoid:ChangeState(11)
+    end
+end)
+
+game:GetService("UserInputService").JumpRequest:Connect(function()
+	if infjumpenabled then
+		game:GetService("Players").LocalPlayer.Character.Humanoid:ChangeState("Jumping")
+	end
+end)
+
+--Main
+
+b:Toggle("AutoFarm",function(bool)
+   if bool then
+       wait(5)
+       getgenv().AutoFarm = true
+       local camera = game.Workspace.CurrentCamera
+       function getClosest()
+           local closestdistance = math.huge
+           local ClosetPlayer = nil
+           for i,v in pairs(game.Players:GetChildren()) do
+               if v ~= game.Players.LocalPlayer and v.Team ~= game.Players.LocalPlayer.Team then
+                   local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.Character.HumanoidRootPart.Position).magnitude
+                   if distance < closestdistance then
+                       closestdistance = distance
+                       ClosetPlayer = v
+                   end
+               end
+           end
+           return ClosetPlayer
+       end
+
+       game:GetService("RunService").Stepped:connect(function()
+           if getgenv().AutoFarm == true then
+           game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = getClosest().Character.HumanoidRootPart.CFrame * CFrame.new(0, 0, 4)
+           camera.CFrame = CFrame.new(camera.CFrame.Position, getClosest().Character.Head.Position)
+           mouse1press()
+           wait()
+           mouse1release()
+           keypress(0x52)
+           end
+       end)
+   else
+       print("Stopped")
+       getgenv().AutoFarm = false
+   end
+end)
+
+b:Toggle("Tp To All",function(Farmq)
+            getgenv().farmer = Farmq
+            while wait() do
+                if getgenv().farmer == true then
+                    for i, v in pairs(game.Players:GetChildren()) do
+                        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.Character.HumanoidRootPart.CFrame
+                    end
+                end
+            end
+        end)
+
+
+    
+    
+b:Toggle("Lag Players",function(Value)
+
+
+if _G.lag then
+    return
+end
+_G.lag=Value
+game.RunService.RenderStepped:Connect(function()
+    for _=1,5 do
+        game.ReplicatedStorage.Events.Trail:FireServer(
+            CFrame.new(math.random(),math.random(),math.random()),
+            Vector3.new(0,1,0),
+            {
+                
+            },
+            Color3.new(1,1,1),
+            "Railgun",
+            game.Players.LocalPlayer.Character.HumanoidRootPart
+        )
+    end
+end)
+        end)
+    
+    
+    
+    
+
+--player
+
+c:Button("No Fall Damage",function()
+            game:GetService("ReplicatedStorage").Events.FallDamage:Destroy()
+end)
+
+c:Button("Fast Heal",function()
+while game.RunService.RenderStepped:Wait()do
+    pcall(function()
+        if game.Players.LocalPlayer.Character then
+            if game.Players.LocalPlayer.NRPBS.Health.Value<=99 then
+                if game.Players.LocalPlayer.Character:FindFirstChild("Spawned")then
+                    for _,v in pairs(game.Workspace.Debris:GetChildren())do
+                        if v.Name=="DeadHP"then
+                            v.CFrame=game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+                            v.Transparency=1
+                        end
+                    end
+                    game.ReplicatedStorage.Events.ApplyGun:FireServer(game.ReplicatedStorage.Weapons["Stake Launcher"])
+                    game.ReplicatedStorage.Events.HealBoy:FireServer(game.Players.LocalPlayer.Character.HumanoidRootPart)
+                    game.ReplicatedStorage.Events.ApplyGun:FireServer(game.Players.LocalPlayer.PlayerGui.GUI.Client.Variables.gun.Value)
+                    wait(1)
+                end
+            end
+        end
+    end)
+end
+end)
+
+c:Slider("WalkSpeed",0,250, function(Value)
+	game:GetService("Players").LocalPlayer.Character.Humanoid.WalkSpeed = Value
+end)
+
+c:Slider("Jump Power",0,250, function(Value)
+	game:GetService("Players").LocalPlayer.Character.Humanoid.JumpPower = Value
+end)
+
+c:Slider("Gravity",0,500, function(Value)
+    workspace.Gravity = Value
+end)
+
+c:Toggle("Noclip", function(Value)
+    noclip = Value
+end)
+
+c:Toggle("Infinite Jump", function(value)
+infjumpenabled = value
+end)
+
+--Visual
+
+e:Button("FPS Booster", function(value)
+local removedecals = false
+local g = game
+local w = g.Workspace
+local l = g.Lighting
+local t = w.Terrain
+t.WaterWaveSize = 0
+t.WaterWaveSpeed = 0
+t.WaterReflectance = 0
+t.WaterTransparency = 0
+l.GlobalShadows = false
+l.FogEnd = 9e9
+l.Brightness = 0
+settings().Rendering.QualityLevel = "Level01"
+for i, v in pairs(g:GetDescendants()) do
+    if v:IsA("Part") or v:IsA("Union") or v:IsA("CornerWedgePart") or v:IsA("TrussPart") then
+        v.Material = "Plastic"
+        v.Reflectance = 0
+    elseif v:IsA("Decal") or v:IsA("Texture") and removedecals then
+        v.Transparency = 1
+    elseif v:IsA("ParticleEmitter") or v:IsA("Trail") then
+        v.Lifetime = NumberRange.new(0)
+    elseif v:IsA("Explosion") then
+        v.BlastPressure = 1
+        v.BlastRadius = 1
+    elseif v:IsA("Fire") or v:IsA("SpotLight") or v:IsA("Smoke") or v:IsA("Sparkles") then
+        v.Enabled = false
+    elseif v:IsA("MeshPart") then
+        v.Material = "Plastic"
+        v.Reflectance = 0
+        v.TextureID = 10385902758728957
+    end
+end
+for i, e in pairs(l:GetChildren()) do
+    if e:IsA("BlurEffect") or e:IsA("SunRaysEffect") or e:IsA("ColorCorrectionEffect") or e:IsA("BloomEffect") or e:IsA("DepthOfFieldEffect") then
+        e.Enabled = false
+    end
+end
+end)
+
+e:Button("HitBox Expander",function(thing)
+            spawn(
+                function()
+                    while wait() do
+                        for i, v in pairs(game.Players:GetChildren()) do
+                            for i2, v2 in pairs(game.Workspace[v.Name]:GetChildren()) do
+                                if v2.Name == "LowerTorso" then
+                                    if
+                                        v.Name ~= game.Players.LocalPlayer.Name and
+                                            v.Team ~= game.Players.LocalPlayer.Team
+                                     then
+                                        if v2.CanCollide == true then
+                                            v2.CanCollide = false
+                                            v2.Size = Vector3.new(30, 30, 30)
+                                            v2.Parent.HumanoidRootPart.Size = Vector3.new(30, 30, 30)
+                                        end
+                                    elseif
+                                        v.Team == game.Players.LocalPlayer.Team and
+                                            v.Name ~= game.Players.LocalPlayer.Name
+                                     then
+                                        if
+                                            v2.Parent.HumanoidRootPart.Size ~= Vector3.new(1, 2, 1) and
+                                                v2.Size ~= Vector3.new(2, 0.4, 1)
+                                         then
+                                            v2.CanCollide = true
+                                            v2.Size = Vector3.new(2, 0.4, 1)
+                                            v2.Parent.HumanoidRootPart.Size = Vector3.new(1, 2, 1)
+                                        end
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end)
+end)  
+    
+e:Button("Rainbow Gun",function()
+local c = 1
+function zigzag(X)
+ return math.acos(math.cos(X * math.pi)) / math.pi
+end
+game:GetService("RunService").RenderStepped:Connect(function()
+ if game.Workspace.Camera:FindFirstChild('Arms') then
+  for i,v in pairs(game.Workspace.Camera.Arms:GetDescendants()) do
+   if v.ClassName == 'MeshPart' then 
+    v.Color = Color3.fromHSV(zigzag(c),1,1)
+    c = c + .0001
+   end
+  end
+ end
+end)
+end)   
+
+e:Slider("FOV",0,120, function(Value)
+    
+local amount = fovamount
+
+game:GetService'Workspace'.Camera.FieldOfView = Value
+
+end)
+
+
+
+
+e:Toggle("Xray", function(value)
+    if value then
+        for i,v in pairs(workspace:GetDescendants()) do
+			if v:IsA("BasePart") and not v.Parent.Parent:FindFirstChild("Humanoid") then
+				v.Transparency = v.Transparency + 0.5
+			end
+		end
+    else
+        for i,v in pairs(workspace:GetDescendants()) do
+			if v:IsA("BasePart") and not v.Parent.Parent:FindFirstChild("Humanoid") then
+				v.Transparency = v.Transparency - 0.5
+			end
+		end
+    end
+end)
+
+e:Toggle("ESP", function(value)
+shared.Visuals = { --// Configuration (Will load default settings if shared.Visuals doesn't exist.)
+    Enabled = value,
+    CrosshairEnabled = false,
+    Boxes = true,
+    Healthbar = true,
+    Tracers = true,
+    Info = true,
+    ShowAllyTeam = true,
+    UseTeamColor = true,
+    AllyColor = Color3.fromRGB(0, 255, 0),
+    EnemyColor = Color3.fromRGB(255, 0, 0),
+    Crosshair = {
+        Size = 5,
+        Thickness = 1.5,
+        Offset = 5
+    }
+}
+
+loadstring(game:HttpGet("https://raw.githubusercontent.com/coastss/releases/main/universal_visuals.lua"))()
+end)
+
+
+ d:Button("Aimbot",function()
+            local VUIS = game.UserInputService
+            local camera = game.workspace.CurrentCamera
+
+            function ClosePlayer()
+                local closestDistance = math.huge
+                local closestPlayer = nil
+
+                for i, v in pairs(game.Players:GetChildren()) do
+                    if v ~= game.Players.LocalPlayer and v.Team ~= game.Players.LocalPlayer.Team then
+                        local distance =
+                            (game.Players.LocalPlayer.Character.HumanoidRootPart.Position -
+                            v.Character.HumanoidRootPart.Position).magnitude
+                        if distance < closestDistance then
+                            closestDistance = distance
+                            closestPlayer = v
+                        end
+                    end
+                end
+                return closestPlayer
+            end
+
+            VUIS.InputBegan:Connect(
+                function(input)
+                    if input.UserInputType == Enum.UserInputType.MouseButton2 then
+                        getgenv().aim = true
+                        while wait() do
+                            if getgenv().aim == true then
+                                camera.CFrame =
+                                    CFrame.new(camera.CFrame.Position, ClosePlayer().Character.Head.Position)
+
+                                if getgenv().aim == false then
+                                    return
+                                end
+                            end
+                        end
+                    end
+                end)
+
+            VUIS.InputEnded:Connect(
+                function(input)
+                    if input.UserInputType == Enum.UserInputType.MouseButton2 then
+                        getgenv().aim = false
+                    end
+                end)
+ end)
+    
+ d:Button("Silent Aim",function()
+local Client
+for i,v in pairs(getgc(true)) do
+	if type(v) == "table" and rawget(v, "mode") then
+		Client = v;
+	end
+end
+
+local wkspc = Client.wkspc
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local LocalPlayer = Players.LocalPlayer
+local Mouse = LocalPlayer:GetMouse()
+
+function isSameTeam(Player, Player2)
+	if wkspc.FFA.Value == true then
+		return false
+	else
+		return Player.TeamColor == Player2.TeamColor and true or false
+	end
+end
+
+function getClosestToMouse()
+	local closestdis = math.huge
+	local closestplr
+	local mspos = Mouse.hit.p
+	for i,v in pairs(Players:GetPlayers()) do
+		if v:DistanceFromCharacter(mspos) < closestdis and not isSameTeam(LocalPlayer, v) and v ~= LocalPlayer and v.Character and v.Character:FindFirstChild("Head") and v.Character:FindFirstChild("Spawned") then
+			closestplr = v
+			closestdis = v:DistanceFromCharacter(mspos)
+		end
+	end
+	if not closestplr then return LocalPlayer end
+	return closestplr
+end
+
+rawset(Client, "firebullet", 
+	newcclosure(function()
+		local Random
+		repeat
+			Random = getClosestToMouse()
+			until Random.Character and Random.Character:FindFirstChild("Head")
+		local Gun = ReplicatedStorage.Weapons:FindFirstChild(LocalPlayer.NRPBS.EquippedTool.Value);
+		local Distance = (LocalPlayer.Character.Head.Position - Random.Character.Head.Position).magnitude
+		
+		for i = 1, 5 do
+			ReplicatedStorage.Events.HitPart:FireServer(
+				Random.Character.Head,
+				Random.Character.Head.Position + Vector3.new(math.random(), math.random(), math.random()),
+				Gun.Name,
+				2,
+				Distance,
+				false,
+				true,
+				false,
+				1,
+				false,
+				Gun.FireRate.Value,
+				Gun.ReloadTime.Value,
+				Gun.Ammo.Value,
+				Gun.StoredAmmo.Value,
+				Gun.Bullets.Value,
+				Gun.EquipTime.Value,
+				Gun.RecoilControl.Value,
+				Gun.Auto.Value,
+				Gun['Speed%'].Value,
+				wkspc.DistributedTime.Value
+			)
+		end
+	end)
+)
+ end)    
+  
+  d:Button("Shoot to kill all",function()
+local a
+local b
+repeat game:GetService("RunService").Heartbeat:Wait() until game.Players.LocalPlayer and game.Players.LocalPlayer.PlayerGui:FindFirstChild("GUI")
+for i,v in next, getgc() do
+  if (type(v) == 'function') and (debug.getinfo(v).name == 'firebullet') then
+     a = getfenv(v);
+     b = v
+  end
+end
+repeat game.RunService.Heartbeat:Wait() until game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid")
+game.Players.LocalPlayer.Character.Humanoid:WaitForChild("KMS")
+local gunsilent = true
+hook = hookfunction(a.firebullet, function(...)
+   local args = {...}
+   local Gun = game.ReplicatedStorage.Weapons:FindFirstChild(game.Players.LocalPlayer.NRPBS.EquippedTool.Value);
+   if gunsilent then
+       local Crit = math.random() > .6 and true or false;
+       for i,v in pairs(game.Players:GetPlayers()) do
+           if v and v.Character and v.Character:FindFirstChild("Head") then
+               local Distance = (game.Players.LocalPlayer.Character.Head.Position - v.Character.Head.Position).magnitude
+               for i = 1,5 do
+                   game.ReplicatedStorage.Events.HitPart:FireServer(v.Character.Head,
+                   v.Character.Head.Position + Vector3.new(math.random(), math.random(), math.random()),
+                   Gun.Name,
+                   Crit and 2 or 1,
+                   Distance,
+                   Backstab,
+                   Crit,
+                   false,
+                   1,
+                   false,
+                   Gun.FireRate.Value,
+                   Gun.ReloadTime.Value,
+                   Gun.Ammo.Value,
+                   Gun.StoredAmmo.Value,
+                   Gun.Bullets.Value,
+                   Gun.EquipTime.Value,
+                   Gun.RecoilControl.Value,
+                   Gun.Auto.Value,
+                   Gun['Speed%'].Value,
+                   game.ReplicatedStorage.wkspc.DistributedTime.Value);
+               end
+           end
+       end
+   end
+return hook(...)
+end)
+ end)
+    
+d:Button("Anti Aim",function()
+
+game.RunService.RenderStepped:Connect(function()
+    --so the updater has to constantly update
+    getsenv(game.Players.LocalPlayer.PlayerGui.GUI.Client).lastlook=10000
+    if game.Players.LocalPlayer.Character then
+        --remove legs
+        for _,v in pairs(game.Players.LocalPlayer.Character:GetChildren())do
+            if string.find(string.lower(v.Name),"foot")or string.find(string.lower(v.Name),"leg")then
+                if v:IsA("BasePart")then
+                    v:Destroy()
+                end
+            end
+        end
+        --remove head aswell as its hitbox
+        if game.Players.LocalPlayer.Character:FindFirstChild("HeadHB")then
+            game.Players.LocalPlayer.Character:FindFirstChild("HeadHB"):Destroy()
+        end
+        if game.Players.LocalPlayer.Character:FindFirstChild("FakeHead")then
+            game.Players.LocalPlayer.Character:FindFirstChild("FakeHead"):Destroy()
+        end
+    end
+end)
+--custom no animation
+local noanim=Instance.new("Animation")
+noanim.AnimationId="rbxassetid://0"
+local mt=getrawmetatable(game)
+local oldNamecall=mt.__namecall
+local oldnewIndex=mt.__newindex
+setreadonly(mt,false)
+mt.__namecall=newcclosure(function(a,b,c,...)
+    local method=getnamecallmethod()
+    if tostring(method)=="FireServer"then
+        if tostring(a)=="ControlTurn"then
+            --randomize player pitch
+            b=math.rad(math.random(-360,360))
+            --randomize middle joint
+            c=Vector3.new(math.random(-10,10),math.random(-10,10),math.random(-10,10))
+            --rotate the player slow enough to uipdate it to the server but fast enough to make it spin
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame=
+            CFrame.new(game.Players.LocalPlayer.Character.HumanoidRootPart.Position)*
+            CFrame.Angles(0,math.rad(math.random(-360,360)),0)
+        end
+    elseif tostring(method)=="LoadAnimation"then
+        if tostring(a)=="Humanoid"then
+            --remove player animations
+            b=noanim
+        end
+    end
+    return oldNamecall(a,b,c,...)
+end)
+mt.__newindex=newcclosure(function(a,b,c)
+    if tostring(a)=="Humanoid"and b=="AutoRotate"then
+        --disable auto rotate so the plater rotation dosent mess up
+        return oldnewIndex(a,b,false)
+    end
+    return oldnewIndex(a,b,c)
+end)
+end)
+
+d:Toggle("Wallbang",function(Value)
+shared.WB = Value
+shared.Key = 't'
+
+game.Players.LocalPlayer:GetMouse().KeyDown:Connect(function(Key)
+    if Key == shared.Key then
+        shared.WB = not shared.WB
+    end
+end)
+
+local mt = getrawmetatable(game)
+local nc = mt.__namecall
+
+setreadonly(mt, false)
+
+mt.__namecall = newcclosure(function(self, ...)
+    local Method = getnamecallmethod()
+    local Arguments = {...}
+   
+    if Method == 'FindPartOnRayWithIgnoreList' and shared.WB then
+        table.insert(Arguments[2], game.GetService(game, 'Workspace').Map)
+       
+        return nc(self, unpack(Arguments))
+    end
+   
+    return nc(self,...)
+end)
+end)
+
+
+f:Button("Ammo",function()
+for _,v in pairs(game.ReplicatedStorage.Weapons:GetChildren())do
+debug.setconstant(require(game.Players.LocalPlayer.PlayerGui.GUI.Client.Functions.Weapons).getammo,13,"StoredAmmo_Spicy")--spoof stored ammo detector with a new value
+debug.setconstant(require(game.Players.LocalPlayer.PlayerGui.GUI.Client.Functions.Weapons).getsecondaryammo,7,"StoredAmmo_Spicy")--spoof stored ammo detector with a new value
+debug.setconstant(require(game.Players.LocalPlayer.PlayerGui.GUI.Client.Functions.Weapons).getprimaryammo,7,"StoredAmmo_Spicy")--spoof stored ammo detector with a new value
+debug.setconstant(require(game.Players.LocalPlayer.PlayerGui.GUI.Client.Functions.Weapons).countammo,61,"StoredAmmo_Spicy")--spoof stored ammo detector with a new value
+debug.setconstant(getsenv(game.Players.LocalPlayer.PlayerGui.GUI.Client).givetools,114,"StoredAmmo_Spicy")--spoof stored ammo detector with a new value
+debug.setconstant(getsenv(game.Players.LocalPlayer.PlayerGui.GUI.Client).updtprimary,9,"StoredAmmo_Spicy")--spoof stored ammo detector with a new value
+    pcall(function()
+        require(game.Players.LocalPlayer.PlayerGui.GUI.Client.Functions.Weapons).getammo=function()return 999 end --spoofs clip size (999 is the 
+        --adds the spoofed stored ammo value
+        local a=v.StoredAmmo:Clone()
+        a.Name="StoredAmmo_Spicy"
+        a.Parent=v
+        a.Value=199
+    end)
+    end
+end)
+
+f:Button("Fire rate",function()
+for _,v in pairs(game.ReplicatedStorage.Weapons:GetChildren())do
+debug.setconstant(require(game.Players.LocalPlayer.PlayerGui.GUI.Client.Functions.Weapons).firebullet,347,"FireRate_Spicy")--spoof fire rate detector with a new value
+debug.setconstant(require(game.Players.LocalPlayer.PlayerGui.GUI.Client.Functions.Weapons).firebullet,344,"FireRate_Spicy")--spoof fire rate detector with a new value
+    pcall(function()
+        --adds the spoofed fire rate value
+        local a=v.FireRate:Clone()
+        a.Name="FireRate_Spicy"
+        a.Parent=v
+        a.Value=0
+    end)
+    end
+end)
+
+f:Button("Recoil",function()
+for _,v in pairs(game.ReplicatedStorage.Weapons:GetChildren())do
+    debug.setconstant(require(game.Players.LocalPlayer.PlayerGui.GUI.Client.Functions.Weapons).usethatgun,119,"RecoilControl_Spicy")--spoofs recoil detector with a new value
+    pcall(function()
+        --adds the spoofed recoil value
+        local a=v.RecoilControl:Clone()
+        a.Name="RecoilControl_Spicy"
+        a.Parent=v
+        a.Value=0
+    end)
+    end
+end)
+
+f:Button("Reload Time",function()
+for _,v in pairs(game.ReplicatedStorage.Weapons:GetChildren())do
+    debug.setconstant(require(game.Players.LocalPlayer.PlayerGui.GUI.Client.Functions.Weapons).reloadwep,88,"ReloadTime_Spicy")--spoofs reload time detector with a new value
+    pcall(function()
+        --adds the spoofed reload time value
+        local a=v.ReloadTime:Clone()
+        a.Name="ReloadTime_Spicy"
+        a.Parent=v
+        a.Value=0
+    end)
+    end
+end)
+
+f:Button("Equip time",function()
+for _,v in pairs(game.ReplicatedStorage.Weapons:GetChildren())do
+    debug.setconstant(require(game.Players.LocalPlayer.PlayerGui.GUI.Client.Functions.Weapons).usethatgun,415,"EquipTime_Spicy")--spoofs equip time detector with a new value
+    pcall(function()
+        --adds the spoofed equip time value
+        local a=v.EquipTime:Clone()
+        a.Name="EquipTime_Spicy"
+        a.Parent=v
+        a.Value=0
+    end)
+    end
+end)
+
+f:Button("Fire rate",function()
+for _,v in pairs(game.ReplicatedStorage.Weapons:GetChildren())do
+    pcall(function()
+        --knife range
+        v.Range.Value=1000000
+    end)
+    end
+end)
+
+f:Button("Scope all Guns",function()
+    local a=Instance.new("Folder")
+    a.Parent=v
+    a.Name="Scoped"
+end)
+
+f:Button("remove black stuff on scope",function()
+for i=1,4 do
+    game:GetService("Players").LocalPlayer.PlayerGui.GUI.Crosshairs["Frame"..i].Transparency=1
+end
+game:GetService("Players").LocalPlayer.PlayerGui.GUI.Crosshairs.Scope.ImageTransparency=1
+game:GetService("Players").LocalPlayer.PlayerGui.GUI.Crosshairs.Scope.Scope.Size=UDim2.new(2,0,2,0)
+game:GetService("Players").LocalPlayer.PlayerGui.GUI.Crosshairs.Scope.Scope.Position=UDim2.new(-.5,0,-.5,0)
+local a=game:GetService("Players").LocalPlayer.PlayerGui.GUI.Crosshairs.Scope.Scope:Clone()
+a.Parent=game:GetService("Players").LocalPlayer.PlayerGui.GUI.Crosshairs.Scope
+a.Name="Scope2"
+--get current gun offset
+local offset=Vector3.new()
+game.RunService.RenderStepped:Connect(function()
+    offset=Vector3.new()
+    if game.Workspace.CurrentCamera:FindFirstChild("Arms")then
+        for _,v in pairs(game.Workspace.CurrentCamera.Arms:GetChildren())do
+            if v:IsA("Vector3Value")then
+                offset=v.Value
+                break
+            end
+        end
+    end
+end)
+end)
+
+f:Button("Always Automatic",function()
+local mouse1=false
+game.Players.LocalPlayer:GetMouse().Button1Down:Connect(function()
+    mouse1=true
+end)
+game.Players.LocalPlayer:GetMouse().Button1Up:Connect(function()
+    mouse1=false
+end)
+coroutine.wrap(function()
+    while game.RunService.RenderStepped:Wait()do
+        if mouse1 then
+            require(game.Players.LocalPlayer.PlayerGui.GUI.Client.Functions.Weapons).firebullet()
+        end
+    end
+end)()
+end)
+
+
+g:Button("Redeem All Codes",function()
+local Codes = {
+"GARCELLO",
+"ROLVE",
+"TROLLFACE",
+"POG",
+"BLOXY",
+"Bandites",
+"EPRIKA",
+"FLAMINGO",
+"JOHN",
+"KITTEN",
+"PET",
+"ANNA",
+"F00LISH",
+"CBROX",
+"POKE"
+}
+local RedeemEvent = game:GetService("ReplicatedStorage").Redeem
+for _, event in pairs(Codes) do
+  wait(0.5)
+  RedeemEvent:InvokeServer(event)
+end
+
+local StarterGui = game:GetService("StarterGui")
+	StarterGui:SetCore("SendNotification", {
+		Title = "Codes";
+		Text = "All Codes have been redeemed"
+	})
+end)
+
