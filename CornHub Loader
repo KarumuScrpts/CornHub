@@ -20,6 +20,10 @@ if game.PlaceId==292439477 then --Phantom Forces (Auto Farm)
 lo("https://raw.githubusercontent.com/KarumuScrpts/CornHub/main/PhantomForcesAutoFarm")
 end
 
+if game.PlaceId==286090429 then --Arsenal
+lo("https://raw.githubusercontent.com/KarumuScrpts/CornHub/main/Arsenal.txt")
+end
+
 if nouni==false then --Universal
 lo("https://raw.githubusercontent.com/KarumuScrpts/CornHub/main/Universal.txt")
 end
