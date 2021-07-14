@@ -2,9 +2,23 @@ local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Karum
 local a = library:NewWindow("Corn","HUB") -- Change to anything
 local b = a:NewSection("Main")
 local c = a:NewSection("Player")
+local g = a:NewSection("Aim")
 local e = a:NewSection("Visual")
+local f = a:NewSection("HitBox")
 local d = a:NewSection("Extra")
 
+--AimBot Thingss
+local Camera = workspace.CurrentCamera
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+local TweenService = game:GetService("TweenService")
+local LocalPlayer = Players.LocalPlayer
+local Holding = false
+local Locked = false
+local Victim
+
+--Other tings
 local client = game.Players.LocalPlayer
 local char = client.Character
 
@@ -24,6 +38,37 @@ game:GetService("UserInputService").JumpRequest:Connect(function()
 end)
 
 --Main
+b:Button("AntiKick",function()
+local hook = game:GetService("Players").LocalPlayer.Kick;
+local mt = getrawmetatable(game:GetService("Players").LocalPlayer)
+local OldNamecall = mt.__namecall
+local OldIndex = mt.__index
+
+print("AntiKick") -- remove this if you want, just dont claim it as yours ty
+make_writeable(mt)
+mt.__namecall = newcclosure(function(self, Index, ...)
+    local NameCallMethod = getnamecallmethod()
+    if type(NameCallMethod) == "string" then
+        if NameCallMethod == "Kick" or NameCallMethod == "kick" then
+            print("Prevented Kick At " .. tostring(os.time()))
+            return function()end
+        end
+    end
+    return OldNamecall(self, Index, ...)
+end)
+
+mt.__index = newcclosure(function(self, Index, ...)
+    if type(Index) == "string" then
+        if Index == "Kick" or Index == "kick" then
+            print("Prevented Kick At " .. tostring(os.time()))
+            return function()end
+        end
+    end
+    return OldIndex(self, Index, ...)
+end)
+make_readonly(mt)
+end)
+
 
 b:Button("Rejoin Game",function()
 local ts = game:GetService("TeleportService")
@@ -39,20 +84,142 @@ b:Button("Give Btools", function()
 	tool2.BinType = "Hammer"
 end)
 
+--Aim
+
+g:Toggle("Enable AimBot", function(value)
+
+_G.AimbotEnabled = value
+_G.TeamCheck = false -- If set to true then the script would only lock your aim at enemy team members.
+_G.AimPart = "Head" -- Where the aimbot script would lock at.
+_G.Sensitivity = 0 -- How many seconds it takes for the aimbot script to officially lock onto the target's aimpart.
+
+_G.CircleSides = 64 -- How many sides the FOV circle would have.
+_G.CircleColor = Color3.fromRGB(255, 255, 255) -- (RGB) Color that the FOV circle would appear as.
+_G.CircleTransparency = 0.7 -- Transparency of the circle.
+_G.CircleRadius = 80 -- The radius of the circle / FOV.
+_G.CircleFilled = false -- Determines whether or not the circle is filled.
+_G.CircleVisible = false -- Determines whether or not the circle is visible.
+_G.CircleThickness = 0 -- The thickness of the circle.
+
+local FOVCircle = Drawing.new("Circle")
+FOVCircle.Position = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
+FOVCircle.Radius = _G.CircleRadius
+FOVCircle.Filled = _G.CircleFilled
+FOVCircle.Color = _G.CircleColor
+FOVCircle.Visible = _G.CircleVisible
+FOVCircle.Radius = _G.CircleRadius
+FOVCircle.Transparency = _G.CircleTransparency
+FOVCircle.NumSides = _G.CircleSides
+FOVCircle.Thickness = _G.CircleThickness
+
+local function GetClosestPlayer()
+	local MaximumDistance = _G.CircleRadius
+	local Target
+
+	for _, v in pairs(game.Players:GetPlayers()) do
+        if v.Name ~= LocalPlayer.Name then
+            if _G.TeamCheck == true then 
+                if v.Team ~= LocalPlayer.Team then
+                    if workspace:FindFirstChild(v.Name) ~= nil then
+                        if workspace[v.Name]:FindFirstChild("HumanoidRootPart") ~= nil then
+                            if workspace[v.Name]:FindFirstChild("Humanoid") ~= nil and workspace[v.Name]:FindFirstChild("Humanoid").Health ~= 0 then
+                                local ScreenPoint = Camera:WorldToScreenPoint(workspace[v.Name]:WaitForChild("HumanoidRootPart", math.huge).Position)
+                                local VectorDistance = (Vector2.new(UserInputService:GetMouseLocation().X, UserInputService:GetMouseLocation().Y) - Vector2.new(ScreenPoint.X, ScreenPoint.Y)).Magnitude
+                                
+                                if VectorDistance < MaximumDistance then
+                                    Target = v
+                                end
+                            end
+                        end
+                    end
+                end
+            else
+                if workspace:FindFirstChild(v.Name) ~= nil then
+                    if workspace[v.Name]:FindFirstChild("HumanoidRootPart") ~= nil then
+                        if workspace[v.Name]:FindFirstChild("Humanoid") ~= nil and workspace[v.Name]:FindFirstChild("Humanoid").Health ~= 0 then
+                            local ScreenPoint = Camera:WorldToScreenPoint(workspace[v.Name]:WaitForChild("HumanoidRootPart", math.huge).Position)
+                            local VectorDistance = (Vector2.new(UserInputService:GetMouseLocation().X, UserInputService:GetMouseLocation().Y) - Vector2.new(ScreenPoint.X, ScreenPoint.Y)).Magnitude
+                            
+                            if VectorDistance < MaximumDistance then
+                                Target = v
+                            end
+                        end
+                    end
+                end
+            end
+		end
+	end
+
+	return Target
+end
+
+UserInputService.InputBegan:Connect(function(Input)
+    if Input.UserInputType == Enum.UserInputType.MouseButton2 then
+        Holding = true
+    end
+end)
+
+UserInputService.InputEnded:Connect(function(Input)
+    if Input.UserInputType == Enum.UserInputType.MouseButton2 then
+        Holding = false
+        Locked = false
+    end
+end)
+
+RunService.RenderStepped:Connect(function()
+    FOVCircle.Position = Vector2.new(UserInputService:GetMouseLocation().X, UserInputService:GetMouseLocation().Y)
+    FOVCircle.Radius = _G.CircleRadius
+    FOVCircle.Filled = _G.CircleFilled
+    FOVCircle.Color = _G.CircleColor
+    FOVCircle.Visible = _G.CircleVisible
+    FOVCircle.Radius = _G.CircleRadius
+    FOVCircle.Transparency = _G.CircleTransparency
+    FOVCircle.NumSides = _G.CircleSides
+    FOVCircle.Thickness = _G.CircleThickness
+    if Holding == true and _G.AimbotEnabled == true then
+        TweenService:Create(Camera, TweenInfo.new(_G.Sensitivity, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {CFrame = CFrame.new(Camera.CFrame.Position, GetClosestPlayer().Character[_G.AimPart].Position)}):Play()
+        Locked = true
+    end
+end)
+end)
+
+g:Toggle("Team Check", function(value)
+    
+_G.TeamCheck = value -- If set to true then the script would only lock your aim at enemy team members.
+
+end)
+
+g:Toggle("FOV Circle", function(value)
+
+_G.CircleSides = 64 -- How many sides the FOV circle would have.
+_G.CircleColor = Color3.fromRGB(255, 255, 255) -- (RGB) Color that the FOV circle would appear as.
+_G.CircleRadius = 80 -- The radius of the circle / FOV.
+_G.CircleVisible = value -- Determines whether or not the circle is visible.
+_G.CircleThickness = 0 -- The thickness of the circle.
+
+
+end)
+
+g:Slider("FOV Circle Size",0,1080, function(value)
+    
+_G.CircleRadius = value -- The radius of the circle / FOV.
+
+end)
+
+g:Slider("FOV Circle Transparency",0,1, function(value)
+    
+_G.CircleTransparency = value -- Transparency of the circle.
+
+end)
+
+
+g:Slider("FOV Circle Thickness",0, 20, function(value)
+    
+_G.CircleThickness = value -- The thickness of the circle.
+
+end)
+
 --player
-c:Button("Break Joints", function()
-local player = game.Players.LocalPlayer.Name
-game.workspace[player]:BreakJoints()
-end)
-
-c:Button("Force Reset Character", function()
-local playerrr = game.Players.LocalPlayer
-local nameofplayerrr = player.Character.Name
-print(nameofplayerrr)
-game.Workspace[nameofplayerrr].Humanoid.Health = 0
-warn("Player Reset!")
-end)
-
 c:Slider("WalkSpeed",0,250, function(Value)
 	game:GetService("Players").LocalPlayer.Character.Humanoid.WalkSpeed = Value
 end)
@@ -115,30 +282,6 @@ for i, e in pairs(l:GetChildren()) do
 end
 end)
 
-e:Button("HD Graphics", function(value)
-_G.BlurSize = 1
-
-_G.ColorCorrectionBrightness = 0.03
-_G.ColorCorrectionContrast = 0.3
-_G.ColorCorrectionSaturation = 0.01
-_G.ColorCorrectionTintColor = Color3.fromRGB(244,244,244)
-
-_G.SunRaysIntensity = 0.2
-_G.SunRaysSpread = 1
-
--- Lighting settings:
-_G.GlobalShadows = true
-_G.Brightness = 0.9
-_G.GeographicLatitude = 350
-_G.TimeOfDay = 17
-_G.ExposureCompensation = 0.03
-
-
-spawn(function()
-loadstring(game:HttpGet("\104\116\116\112\115\58\47\47\112\97\115\116\101\98\105\110\46\99\111\109\47\114\97\119\47\55\110\57\103\53\55\112\50"))()
-end)
-end)
-
 e:Slider("FOV",0,120, function(Value)
     
 local amount = fovamount
@@ -186,6 +329,238 @@ shared.Visuals = { --// Configuration (Will load default settings if shared.Visu
 }
 
 loadstring(game:HttpGet("https://raw.githubusercontent.com/coastss/releases/main/universal_visuals.lua"))()
+end)
+
+e:Toggle("FullBright", function(value)
+if not _G.FullBrightExecuted then
+
+	_G.FullBrightEnabled = false
+
+	_G.NormalLightingSettings = {
+		Brightness = game:GetService("Lighting").Brightness,
+		ClockTime = game:GetService("Lighting").ClockTime,
+		FogEnd = game:GetService("Lighting").FogEnd,
+		GlobalShadows = game:GetService("Lighting").GlobalShadows,
+		Ambient = game:GetService("Lighting").Ambient
+	}
+
+	game:GetService("Lighting"):GetPropertyChangedSignal("Brightness"):Connect(function()
+		if game:GetService("Lighting").Brightness ~= 1 and game:GetService("Lighting").Brightness ~= _G.NormalLightingSettings.Brightness then
+			_G.NormalLightingSettings.Brightness = game:GetService("Lighting").Brightness
+			if not _G.FullBrightEnabled then
+				repeat
+					wait()
+				until _G.FullBrightEnabled
+			end
+			game:GetService("Lighting").Brightness = 1
+		end
+	end)
+
+	game:GetService("Lighting"):GetPropertyChangedSignal("ClockTime"):Connect(function()
+		if game:GetService("Lighting").ClockTime ~= 12 and game:GetService("Lighting").ClockTime ~= _G.NormalLightingSettings.ClockTime then
+			_G.NormalLightingSettings.ClockTime = game:GetService("Lighting").ClockTime
+			if not _G.FullBrightEnabled then
+				repeat
+					wait()
+				until _G.FullBrightEnabled
+			end
+			game:GetService("Lighting").ClockTime = 12
+		end
+	end)
+
+	game:GetService("Lighting"):GetPropertyChangedSignal("FogEnd"):Connect(function()
+		if game:GetService("Lighting").FogEnd ~= 786543 and game:GetService("Lighting").FogEnd ~= _G.NormalLightingSettings.FogEnd then
+			_G.NormalLightingSettings.FogEnd = game:GetService("Lighting").FogEnd
+			if not _G.FullBrightEnabled then
+				repeat
+					wait()
+				until _G.FullBrightEnabled
+			end
+			game:GetService("Lighting").FogEnd = 786543
+		end
+	end)
+
+	game:GetService("Lighting"):GetPropertyChangedSignal("GlobalShadows"):Connect(function()
+		if game:GetService("Lighting").GlobalShadows ~= false and game:GetService("Lighting").GlobalShadows ~= _G.NormalLightingSettings.GlobalShadows then
+			_G.NormalLightingSettings.GlobalShadows = game:GetService("Lighting").GlobalShadows
+			if not _G.FullBrightEnabled then
+				repeat
+					wait()
+				until _G.FullBrightEnabled
+			end
+			game:GetService("Lighting").GlobalShadows = false
+		end
+	end)
+
+	game:GetService("Lighting"):GetPropertyChangedSignal("Ambient"):Connect(function()
+		if game:GetService("Lighting").Ambient ~= Color3.fromRGB(178, 178, 178) and game:GetService("Lighting").Ambient ~= _G.NormalLightingSettings.Ambient then
+			_G.NormalLightingSettings.Ambient = game:GetService("Lighting").Ambient
+			if not _G.FullBrightEnabled then
+				repeat
+					wait()
+				until _G.FullBrightEnabled
+			end
+			game:GetService("Lighting").Ambient = Color3.fromRGB(178, 178, 178)
+		end
+	end)
+
+	game:GetService("Lighting").Brightness = 1
+	game:GetService("Lighting").ClockTime = 12
+	game:GetService("Lighting").FogEnd = 786543
+	game:GetService("Lighting").GlobalShadows = false
+	game:GetService("Lighting").Ambient = Color3.fromRGB(178, 178, 178)
+
+	local LatestValue = true
+	spawn(function()
+		repeat
+			wait()
+		until _G.FullBrightEnabled
+		while wait() do
+			if _G.FullBrightEnabled ~= LatestValue then
+				if not _G.FullBrightEnabled then
+					game:GetService("Lighting").Brightness = _G.NormalLightingSettings.Brightness
+					game:GetService("Lighting").ClockTime = _G.NormalLightingSettings.ClockTime
+					game:GetService("Lighting").FogEnd = _G.NormalLightingSettings.FogEnd
+					game:GetService("Lighting").GlobalShadows = _G.NormalLightingSettings.GlobalShadows
+					game:GetService("Lighting").Ambient = _G.NormalLightingSettings.Ambient
+				else
+					game:GetService("Lighting").Brightness = 1
+					game:GetService("Lighting").ClockTime = 12
+					game:GetService("Lighting").FogEnd = 786543
+					game:GetService("Lighting").GlobalShadows = false
+					game:GetService("Lighting").Ambient = Color3.fromRGB(178, 178, 178)
+				end
+				LatestValue = not LatestValue
+			end
+		end
+	end)
+end
+
+_G.FullBrightExecuted = value
+_G.FullBrightEnabled = not _G.FullBrightEnabled
+end)
+
+--HitBox
+
+f:Slider("Size",0,120, function(Value)
+_G.Type = 3 -- 1 means all players; 2 means NPCs, 3 Means both.
+_G.Size = Value
+
+function Player(Toggled)
+for i,v in pairs(game:GetService("Players"):GetChildren()) do
+if v.Name ~= game.Players.LocalPlayer.Name then
+pcall(function()
+if _G.AlreadyDone ~= true then
+_G.AlreadyDone = true
+_G.OGPSize = v.Character.HumanoidRootPart.Size
+end
+end)
+if Toggled == false then
+v.Character.HumanoidRootPart.Size = Vector3.new(_G.OGPSize, _G.OGPSize, _G.OGPSize)
+else
+v.Character.HumanoidRootPart.CanCollide = false
+v.Character.HumanoidRootPart.Size = Vector3.new(_G.Size, _G.Size, _G.Size)
+v.Character.HumanoidRootPart.Color = Color3.new(193, 193, 193)
+v.Character.HumanoidRootPart.Transparency = 0.8
+end
+end
+end
+end
+
+function NPC(Toggled)
+for i,v in pairs(game:GetService("Workspace"):GetDescendants()) do
+if v:FindFirstChild("HumanoidRootPart") and string.match(v.Name:lower(),_G.NPCName:lower()) or v:FindFirstChild("HumanoidRootPart") and v.Name == _G.NPCName then
+pcall(function()
+if _G.AlreadyDone2 ~= true then
+_G.AlreadyDone2 = true
+_G.OGNSize = v.HumanoidRootPart.Size
+end
+end)
+if Toggled == false then
+v.HumanoidRootPart.Size = Vector3.new(_G.OGNSize, _G.OGNSize, _G.OGNSize)
+else
+v.HumanoidRootPart.CanCollide = false
+v.HumanoidRootPart.Size = Vector3.new(_G.Size, _G.Size, _G.Size)
+v.HumanoidRootPart.Color = Color3.new(193, 193, 193)
+v.HumanoidRootPart.Transparency = 0.8
+end
+end
+end
+end
+
+if _G.HitboxToggled == true then
+if _G.Type == 1 then
+repeat Player(true) wait(1) until _G.HitboxToggled == false
+elseif _G.Type == 2 then
+repeat NPC(true) wait(1) until _G.HitboxToggled == false
+elseif _G.Type == 3 then
+repeat Player(true) NPC(true) wait(1) until _G.HitboxToggled == false
+end
+else
+Player(false)
+NPC(false)
+end
+end)
+
+f:Toggle("Enable", function(Value)
+_G.HitboxToggled = Value -- set to false if you want off.
+_G.Type = 3 -- 1 means all players; 2 means NPCs, 3 Means both.
+
+
+function Player(Toggled)
+for i,v in pairs(game:GetService("Players"):GetChildren()) do
+if v.Name ~= game.Players.LocalPlayer.Name then
+pcall(function()
+if _G.AlreadyDone ~= true then
+_G.AlreadyDone = true
+_G.OGPSize = v.Character.HumanoidRootPart.Size
+end
+end)
+if Toggled == false then
+v.Character.HumanoidRootPart.Size = Vector3.new(_G.OGPSize, _G.OGPSize, _G.OGPSize)
+else
+v.Character.HumanoidRootPart.CanCollide = false
+v.Character.HumanoidRootPart.Size = Vector3.new(_G.Size, _G.Size, _G.Size)
+v.Character.HumanoidRootPart.Color = Color3.new(193, 193, 193)
+v.Character.HumanoidRootPart.Transparency = 0.8
+end
+end
+end
+end
+
+function NPC(Toggled)
+for i,v in pairs(game:GetService("Workspace"):GetDescendants()) do
+if v:FindFirstChild("HumanoidRootPart") and string.match(v.Name:lower(),_G.NPCName:lower()) or v:FindFirstChild("HumanoidRootPart") and v.Name == _G.NPCName then
+pcall(function()
+if _G.AlreadyDone2 ~= true then
+_G.AlreadyDone2 = true
+_G.OGNSize = v.HumanoidRootPart.Size
+end
+end)
+if Toggled == false then
+v.HumanoidRootPart.Size = Vector3.new(_G.OGNSize, _G.OGNSize, _G.OGNSize)
+else
+v.HumanoidRootPart.CanCollide = false
+v.HumanoidRootPart.Size = Vector3.new(_G.Size, _G.Size, _G.Size)
+v.HumanoidRootPart.Color = Color3.new(193, 193, 193)
+v.HumanoidRootPart.Transparency = 0.8
+end
+end
+end
+end
+
+if _G.HitboxToggled == true then
+if _G.Type == 1 then
+repeat Player(true) wait(1) until _G.HitboxToggled == false
+elseif _G.Type == 2 then
+repeat NPC(true) wait(1) until _G.HitboxToggled == false
+elseif _G.Type == 3 then
+repeat Player(true) NPC(true) wait(1) until _G.HitboxToggled == false
+end
+else
+Player(false)
+NPC(false)
+end
 end)
 
 --Extra
