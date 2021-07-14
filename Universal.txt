@@ -5,7 +5,12 @@ local c = a:NewSection("Player")
 local g = a:NewSection("Aim")
 local e = a:NewSection("Visual")
 local f = a:NewSection("HitBox")
+local h = a:NewSection("Click")
 local d = a:NewSection("Extra")
+
+
+
+
 
 --AimBot Thingss
 local Camera = workspace.CurrentCamera
@@ -36,6 +41,9 @@ game:GetService("UserInputService").JumpRequest:Connect(function()
 		game:GetService("Players").LocalPlayer.Character.Humanoid:ChangeState("Jumping")
 	end
 end)
+
+
+
 
 --Main
 b:Button("AntiKick",function()
@@ -83,6 +91,9 @@ b:Button("Give Btools", function()
 	tool1.BinType = "Clone"
 	tool2.BinType = "Hammer"
 end)
+
+
+
 
 --Aim
 
@@ -561,6 +572,84 @@ else
 Player(false)
 NPC(false)
 end
+end)
+
+--Ctrl
+h:Button("Ctrl+Click destroy", function()
+local Plr = game:GetService("Players").LocalPlayer
+local Mouse = Plr:GetMouse()
+
+Mouse.Button1Down:connect(function()
+if not game:GetService("UserInputService"):IsKeyDown(Enum.KeyCode.LeftControl) then return end
+if not Mouse.Target then return end
+Mouse.Target:Destroy()
+end)
+end)
+
+h:Button("Ctrl+Click Anchor", function()
+local Plr = game:GetService("Players").LocalPlayer
+local Mouse = Plr:GetMouse()
+
+Mouse.Button1Down:connect(function()
+if not game:GetService("UserInputService"):IsKeyDown(Enum.KeyCode.LeftControl) then return end
+if not Mouse.Target then return end
+Mouse.Target.Anchored = true
+end)
+end)
+
+h:Button("Ctrl+Click UnAnchor", function()
+local Plr = game:GetService("Players").LocalPlayer
+local Mouse = Plr:GetMouse()
+
+Mouse.Button1Down:connect(function()
+if not game:GetService("UserInputService"):IsKeyDown(Enum.KeyCode.LeftControl) then return end
+if not Mouse.Target then return end
+Mouse.Target.Anchored = false
+end)
+end)
+
+h:Button("Ctrl+Click Break Joints", function()
+local Plr = game:GetService("Players").LocalPlayer
+local Mouse = Plr:GetMouse()
+
+Mouse.Button1Down:connect(function()
+if not game:GetService("UserInputService"):IsKeyDown(Enum.KeyCode.LeftControl) then return end
+if not Mouse.Target then return end
+Mouse.Target:BreakJoints()
+end)
+end)
+
+h:Button("Ctrl+Click Can Collide", function()
+local Plr = game:GetService("Players").LocalPlayer
+local Mouse = Plr:GetMouse()
+
+Mouse.Button1Down:connect(function()
+if not game:GetService("UserInputService"):IsKeyDown(Enum.KeyCode.LeftControl) then return end
+if not Mouse.Target then return end
+Mouse.Target.CanCollide = true
+end)
+end)
+
+h:Button("Ctrl+Click UnCan Collide", function()
+local Plr = game:GetService("Players").LocalPlayer
+local Mouse = Plr:GetMouse()
+
+Mouse.Button1Down:connect(function()
+if not game:GetService("UserInputService"):IsKeyDown(Enum.KeyCode.LeftControl) then return end
+if not Mouse.Target then return end
+Mouse.Target.CanCollide = false
+end)
+end)
+
+h:Button("Ctrl+Click Teleport", function()
+local Plr = game:GetService("Players").LocalPlayer
+local Mouse = Plr:GetMouse()
+
+Mouse.Button1Down:connect(function()
+if not game:GetService("UserInputService"):IsKeyDown(Enum.KeyCode.LeftControl) then return end
+if not Mouse.Target then return end
+Plr.Character:MoveTo(Mouse.Hit.p)
+end)
 end)
 
 --Extra
