@@ -28,6 +28,10 @@ if game.PlaceId==6956800910 then -- Business Manager Simulator
 lo("https://raw.githubusercontent.com/KarumuScrpts/CornHub/main/BusinessManagerSimulator")
 end
 
+if game.PlaceId==6915291292 then --Bakery Simulator
+lo("https://raw.githubusercontent.com/KarumuScrpts/CornHub/main/Bakery%20Sim.txt")
+end
+
 if nouni==false then --Universal
 lo("https://raw.githubusercontent.com/KarumuScrpts/CornHub/main/Universal.txt")
 end
