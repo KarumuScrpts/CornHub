@@ -24,6 +24,10 @@ if game.PlaceId==286090429 then --Arsenal
 lo("https://raw.githubusercontent.com/KarumuScrpts/CornHub/main/Arsenal.txt")
 end
 
+if game.PlaceId==6956800910 then -- Business Manager Simulator
+lo("https://raw.githubusercontent.com/KarumuScrpts/CornHub/main/BusinessManagerSimulator")
+end
+
 if nouni==false then --Universal
 lo("https://raw.githubusercontent.com/KarumuScrpts/CornHub/main/Universal.txt")
 end
