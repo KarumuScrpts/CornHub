@@ -1,0 +1,336 @@
+local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/KarumuScrpts/E/main/PornHub%20Lib%20Loader"))() -- cal the lib
+local a = library:NewWindow("Corn","HUB") -- Change to anything
+local b = a:NewSection("Auto")
+local c = a:NewSection("Auto fast")
+local d = a:NewSection("Extra")
+
+--Auto
+
+b:Toggle("Pay Bills",function(bool)
+        shared.toggle = bool
+    AutoPayBills = bool
+end)
+
+b:Toggle("Business Level",function(bool)
+        shared.toggle = bool
+    AutoBusinessLvl = bool
+end)
+
+b:Toggle("Staff Efficiency",function(bool)
+        shared.toggle = bool
+    AutoStaffEfficiency = bool
+end)
+
+b:Toggle("Upgrades",function(bool)
+        shared.toggle = bool
+    Upgrades = bool
+end)
+
+b:Toggle("Remove / Clean",function(bool)
+      shared.toggle = bool
+    Remove = bool
+end)
+
+b:Toggle("Tax",function(bool)
+        shared.toggle = bool
+    Tax = bool
+end)
+
+b:Toggle("Rebirth",function(bool)
+        shared.toggle = bool
+    Rebirth = bool
+end)
+
+--AutoBuy fast
+
+c:Toggle("Pay Bills",function(bool)
+        shared.toggle = bool
+    AutoPayBillsFast = bool
+end)
+
+c:Toggle("Business Level",function(bool)
+        shared.toggle = bool
+    AutoBusinessLvlFast = bool
+end)
+
+c:Toggle("Staff Efficiency",function(bool)
+        shared.toggle = bool
+    AutoStaffEfficiencyFast = bool
+end)
+
+c:Toggle("Upgrades",function(bool)
+       shared.toggle = bool
+    UpgradesFast = bool
+end)
+
+c:Toggle("Remove / Clean",function(bool)
+       shared.toggle = bool
+    Remove = bool
+end)
+
+--Extra
+d:Toggle("AntiAfk",function(bool)
+        shared.toggle = bool
+    AntiAfk = bool
+end)
+
+d:Toggle("AutoClaimBadge",function(bool)
+    shared.toggle = bool
+    Badges = bool
+end)
+
+d:Button("Rejoin",function()
+    game:GetService("TeleportService"):Teleport(game.PlaceId, game:GetService("Players").LocalPlayer)
+end)
+
+
+game:GetService('RunService').Stepped:connect(function()
+    spawn(function()
+        if Tax == true then
+            game:GetService("ReplicatedStorage").Events.TaxSystem:InvokeServer("Pay")
+        end
+    end)
+    
+    spawn(function()
+        if Badges == true then
+            for i,v in pairs(game:GetService("Players").LocalPlayer.Badges:GetChildren()) do
+                if v.Value == false then
+                    game:GetService("ReplicatedStorage").Events.ClaimBadge:InvokeServer(v.Name)
+                end
+            end
+        end
+    end)
+    
+    spawn(function()
+        if Rebirth == true then
+            game:GetService("ReplicatedStorage").Events.Rebirth:InvokeServer(true)
+        end
+    end)
+    spawn(function()
+        if AutoPayBillsFast == true then
+            for i,v in pairs(game:GetService("Players").LocalPlayer.Stores:GetChildren()) do
+                game:GetService("ReplicatedStorage").Events.PayBills:InvokeServer(game:GetService("Players").LocalPlayer.Stores[v.Name])
+            end
+        end
+    end)
+    
+    spawn(function()
+        if AutoBusinessLvlFast == true then
+            for i,v in pairs(game:GetService("Players").LocalPlayer.Stores:GetChildren()) do
+                game:GetService("ReplicatedStorage").Events.IncreaseXP:InvokeServer(game:GetService("Players").LocalPlayer.Stores[v.Name])
+            end
+        end
+    end)
+    
+    spawn(function()
+        if AutoStaffEfficiencyFast == true then
+            for i,v in pairs(game:GetService("Players").LocalPlayer.Stores:GetChildren()) do
+                game:GetService("ReplicatedStorage").Events.IncreaseStaffXP:InvokeServer(game:GetService("Players").LocalPlayer.Stores[v.Name])
+            end
+        end
+    end)
+    
+    spawn(function()
+        if UpgradesFast == true then
+            for i,v in pairs(game:GetService("Players").LocalPlayer.PlayerGui.UpgradeInside.Frame.Frame.ScrollingFrame:GetChildren()) do
+                if v.ClassName == "Frame" then
+                    for i,v1 in pairs(game:GetService("Players").LocalPlayer.Stores:GetChildren()) do
+                        game:GetService("ReplicatedStorage").Events.UpgradeInside:InvokeServer(game:GetService("Players").LocalPlayer.Stores[v1.Name],v.Name)
+                    end
+                end
+            end
+        end
+    end)
+    
+    spawn(function()
+        if RemoveFast == true then
+            for i,v in pairs(game:GetService("Players").LocalPlayer.PlayerGui.RemoveInside.Frame.Frame.ScrollingFrame:GetChildren()) do
+                if v.ClassName == "Frame" then
+                    for i,v1 in pairs(game:GetService("Players").LocalPlayer.Stores:GetChildren()) do
+                        game:GetService("ReplicatedStorage").Events.RemoveInside:InvokeServer(game:GetService("Players").LocalPlayer.Stores[v1.Name],v.Name)
+                    end
+                end
+            end
+        end
+    end)
+end)
+
+while wait() do 
+    local E1313,DAD1412 = pcall(function()
+    if AutoPayBills == true then
+        a = string.gsub(game:GetService("Players").LocalPlayer.PlayerGui.InsideStoreUI.stats.Frame.total.Text,"TOTAL : 💵 ","")
+        b = string.gsub(a,",","")
+        Coins = game:GetService("Players").LocalPlayer.Data.ActualMoney.Value
+        time = game:GetService("Players").LocalPlayer.PlayerGui.InsideStoreUI.stats.Frame.time.Text
+        if time == "YOU NEED TO PAY BILLS NOW!" then
+            if tonumber(Coins) >= tonumber(b) then
+                for i,v in pairs(game:GetService("Players").LocalPlayer.Stores:GetChildren()) do
+                    game:GetService("ReplicatedStorage").Events.PayBills:InvokeServer(game:GetService("Players").LocalPlayer.Stores[v.Name])
+                end
+            end
+        end
+    end
+    
+    if AutoBusinessLvl == true then
+        Coins = game:GetService("Players").LocalPlayer.Data.ActualMoney.Value
+        a = string.gsub(game:GetService("Players").LocalPlayer.PlayerGui.InsideStoreUI.stats.Frame.total.Text,"TOTAL : 💵 ","")
+        b = string.gsub(a,",","")
+        a4 = string.gsub(game:GetService("Players").LocalPlayer.PlayerGui.StoreLevelUp.Frame.Frame.cost.Text,"INCREASE COST","")
+        a3 = string.gsub(a4,"💵 ","")
+        a2 = string.gsub(a3,":","")
+        a1 = string.gsub(a2," ","")
+        b1 = string.gsub(a1,",","")
+        if tonumber(Coins) - (tonumber(b1) + tonumber(b)) >= 0 then
+            for i,v in pairs(game:GetService("Players").LocalPlayer.Stores:GetChildren()) do
+                Coins1 = game:GetService("Players").LocalPlayer.Data.ActualMoney.Value
+                a11 = string.gsub(game:GetService("Players").LocalPlayer.PlayerGui.InsideStoreUI.stats.Frame.total.Text,"TOTAL : 💵 ","")
+                b11 = string.gsub(a11,",","")
+                a41 = string.gsub(game:GetService("Players").LocalPlayer.PlayerGui.StoreLevelUp.Frame.Frame.cost.Text,"INCREASE COST","")
+                a31 = string.gsub(a41,"💵 ","")
+                a21 = string.gsub(a31,":","")
+                a111 = string.gsub(a21," ","")
+                b111 = string.gsub(a111,",","")
+                if tonumber(Coins1) - (tonumber(b111) + tonumber(b11)) >= 0 then
+                    if not string.find(tonumber(Coins1) - (tonumber(b111) + tonumber(b11)),"-") then
+                        time = game:GetService("Players").LocalPlayer.PlayerGui.InsideStoreUI.stats.Frame.time.Text
+                        time1 = string.gsub(time,"TIME","")
+                        time2 = string.gsub(time1," ","")
+                        time3 = string.gsub(time2,":","")
+                        time4 = string.gsub(time3,"s","")
+                        time5 = string.gsub(time4,"Minute","")
+                        time6 = string.gsub(time5,"Second","")
+                        if tonumber(time6) >= 10 then
+                            game:GetService("ReplicatedStorage").Events.IncreaseXP:InvokeServer(game:GetService("Players").LocalPlayer.Stores[v.Name])
+                        end
+                    end
+                end
+            end
+        end
+    end
+    
+    if AutoStaffEfficiency == true then
+        Coins = game:GetService("Players").LocalPlayer.Data.ActualMoney.Value
+        a = string.gsub(game:GetService("Players").LocalPlayer.PlayerGui.InsideStoreUI.stats.Frame.total.Text,"TOTAL : 💵 ","")
+        b = string.gsub(a,",","")
+        a4 = string.gsub(game:GetService("Players").LocalPlayer.PlayerGui.StaffUpgrade.Frame.Frame.cost.Text,"INCREASE COST","")
+        a3 = string.gsub(a4,"💵 ","")
+        a2 = string.gsub(a3,":","")
+        a1 = string.gsub(a2," ","")
+        b1 = string.gsub(a1,",","")
+        if tonumber(Coins) - (tonumber(b1) + tonumber(b)) >= 0 then
+            for i,v in pairs(game:GetService("Players").LocalPlayer.Stores:GetChildren()) do
+                Coins1 = game:GetService("Players").LocalPlayer.Data.ActualMoney.Value
+                a11 = string.gsub(game:GetService("Players").LocalPlayer.PlayerGui.InsideStoreUI.stats.Frame.total.Text,"TOTAL : 💵 ","")
+                b11 = string.gsub(a11,",","")
+                a41 = string.gsub(game:GetService("Players").LocalPlayer.PlayerGui.StaffUpgrade.Frame.Frame.cost.Text,"INCREASE COST","")
+                a31 = string.gsub(a41,"💵 ","")
+                a21 = string.gsub(a31,":","")
+                a11 = string.gsub(a21," ","")
+                b111 = string.gsub(a11,",","")
+                if tonumber(Coins1) - (tonumber(b111) + tonumber(b11)) >= 0 then
+                    if not string.find(tonumber(Coins1) - (tonumber(b111) + tonumber(b11)),"-") then
+                        time = game:GetService("Players").LocalPlayer.PlayerGui.InsideStoreUI.stats.Frame.time.Text
+                        time1 = string.gsub(time,"TIME","")
+                        time2 = string.gsub(time1," ","")
+                        time3 = string.gsub(time2,":","")
+                        time4 = string.gsub(time3,"s","")
+                        time5 = string.gsub(time4,"Minute","")
+                        time6 = string.gsub(time5,"Second","")
+                        if tonumber(time6) >= 10 then
+                            game:GetService("ReplicatedStorage").Events.IncreaseStaffXP:InvokeServer(game:GetService("Players").LocalPlayer.Stores[v.Name])
+                        end
+                    end
+                end
+            end
+        end
+    end
+    
+    if Upgrades == true then
+        for i,v in pairs(game:GetService("Players").LocalPlayer.PlayerGui.UpgradeInside.Frame.Frame.ScrollingFrame:GetChildren()) do
+            if v.ClassName == "Frame" then
+                Coins = game:GetService("Players").LocalPlayer.Data.ActualMoney.Value
+                a = string.gsub(game:GetService("Players").LocalPlayer.PlayerGui.InsideStoreUI.stats.Frame.total.Text,"TOTAL : 💵 ","")
+                b = string.gsub(a,",","")
+                a1 = string.gsub(v.cost.Text,"UPGRADE","")
+                a2 = string.gsub(a1,"💵 ","")
+                a3 = string.gsub(a2,":","")
+                a4 = string.gsub(a3," ","")
+                b1 = string.gsub(a4,",","")
+                if tonumber(Coins) - (tonumber(b1) + tonumber(b)) >= 0 then
+                    for i,v1 in pairs(game:GetService("Players").LocalPlayer.Stores:GetChildren()) do
+                        Coins1 = game:GetService("Players").LocalPlayer.Data.ActualMoney.Value
+                        a11 = string.gsub(game:GetService("Players").LocalPlayer.PlayerGui.InsideStoreUI.stats.Frame.total.Text,"TOTAL : 💵 ","")
+                        b11 = string.gsub(a11,",","")
+                        a111 = string.gsub(v.cost.Text,"UPGRADE","")
+                        a211 = string.gsub(a111,"💵 ","")
+                        a311 = string.gsub(a211,":","")
+                        a411 = string.gsub(a311," ","")
+                        b111 = string.gsub(a411,",","")
+                        if tonumber(Coins1) - (tonumber(b111) + tonumber(b11)) >= 0 then
+                            if not string.find(tonumber(Coins1) - (tonumber(b111) + tonumber(b11)),"-") then
+                                time = game:GetService("Players").LocalPlayer.PlayerGui.InsideStoreUI.stats.Frame.time.Text
+                                time1 = string.gsub(time,"TIME","")
+                                time2 = string.gsub(time1," ","")
+                                time3 = string.gsub(time2,":","")
+                                time4 = string.gsub(time3,"s","")
+                                time5 = string.gsub(time4,"Minute","")
+                                time6 = string.gsub(time5,"Second","")
+                                if tonumber(time6) >= 10 then
+                                    game:GetService("ReplicatedStorage").Events.UpgradeInside:InvokeServer(game:GetService("Players").LocalPlayer.Stores[v1.Name],v.Name)
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+    
+    if Remove == true then
+        for i,v in pairs(game:GetService("Players").LocalPlayer.PlayerGui.RemoveInside.Frame.Frame.ScrollingFrame:GetChildren()) do
+            if v.ClassName == "Frame" then
+                Coins = game:GetService("Players").LocalPlayer.Data.ActualMoney.Value
+                a = string.gsub(game:GetService("Players").LocalPlayer.PlayerGui.InsideStoreUI.stats.Frame.total.Text,"TOTAL : 💵 ","")
+                b = string.gsub(a,",","")
+                a1 = string.gsub(v.cost.Text,"REMOVAL","")
+                a2 = string.gsub(a1,"💵 ","")
+                a3 = string.gsub(a2,":","")
+                a4 = string.gsub(a3," ","")
+                b1 = string.gsub(a4,",","")
+                if tonumber(Coins) - (tonumber(b1) + tonumber(b)) >= 0 then
+                    for i,v1 in pairs(game:GetService("Players").LocalPlayer.Stores:GetChildren()) do
+                        Coins1 = game:GetService("Players").LocalPlayer.Data.ActualMoney.Value
+                        a11 = string.gsub(game:GetService("Players").LocalPlayer.PlayerGui.InsideStoreUI.stats.Frame.total.Text,"TOTAL : 💵 ","")
+                        b11 = string.gsub(a11,",","")
+                        a111 = string.gsub(v.cost.Text,"REMOVAL","")
+                        a211 = string.gsub(a111,"💵 ","")
+                        a311 = string.gsub(a211,":","")
+                        a411 = string.gsub(a311," ","")
+                        b111 = string.gsub(a411,",","")
+                        if tonumber(Coins1) - (tonumber(b111) + tonumber(b11)) >= 0 then
+                            if not string.find(tonumber(Coins1) - (tonumber(b111) + tonumber(b11)),"-") then
+                                time = game:GetService("Players").LocalPlayer.PlayerGui.InsideStoreUI.stats.Frame.time.Text
+                                time1 = string.gsub(time,"TIME","")
+                                time2 = string.gsub(time1," ","")
+                                time3 = string.gsub(time2,":","")
+                                time4 = string.gsub(time3,"s","")
+                                time5 = string.gsub(time4,"Minute","")
+                                time6 = string.gsub(time5,"Second","")
+                                if tonumber(time6) >= 10 then
+                                    game:GetService("ReplicatedStorage").Events.RemoveInside:InvokeServer(game:GetService("Players").LocalPlayer.Stores[v1.Name],v.Name)
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+    end)
+    print(E1313,DAD1412)
+    if AntiAfk == true then
+        local bb=game:service'VirtualUser'
+        bb:CaptureController()
+        bb:ClickButton2(Vector2.new())
+    end
+end
